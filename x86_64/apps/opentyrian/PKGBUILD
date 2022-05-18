@@ -4,34 +4,25 @@ pkgname=opentyrian-retroroot
 pkgver=2.1.20220318
 pkgrel=1
 pkgdesc='Open Source port of the classic DOS shoot-em-up Tyrian'
-url="https://github.com/$pkgname/$pkgname"
+url='https://github.com/opentyrian/opentyrian'
 arch=('i686' 'x86_64')
 license=('GPL2')
 depends=('sdl2' 'sdl2_net')
 provides=('tyrian' 'opentyrian')
 replaces=('tyrian' 'opentyrian')
 conflicts=('tyrian' 'opentyrian')
-source=("${pkgname}-${pkgver}.tar.gz::https://github.com/$pkgname/$pkgname/archive/refs/tags/v${pkgver}.tar.gz"
+source=("${url}/archive/refs/tags/v${pkgver}.tar.gz"
         'http://camanis.net/tyrian/tyrian21.zip')
 sha256sums=('e0c6afbb5d395c919f9202f4c9b3b4da7bd6e993e9da6152f995012577e1ccbd'
             '7790d09a2a3addcd33c66ef063d5900eb81cc9c342f4807eb8356364dd1d9277')
 
-_srcdir="${pkgname}-${pkgver}"
-
 build() {
-	make prefix=/usr all -C "$_srcdir"
+	make prefix=/usr all -C "$srcdir/opentyrian-${pkgver}"
 }
 
 package() {
-	cd "$_srcdir"
+	cd "$srcdir/opentyrian-${pkgver}"
 	make DESTDIR="$pkgdir" prefix=/usr install
-
-	install -Dm644 "linux/$pkgname.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
-	install -Dm644 "COPYING" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-	for _x in 22 24 32 48 128; do
-		install -Dm644 "linux/icons/tyrian-$_x.png" \
-			"$pkgdir/usr/share/icons/hicolor/${_x}x${_x}/apps/$pkgname.png"
-	done
 
 	cd "$srcdir/tyrian21"
 	install -Dt "$pkgdir/usr/share/games/tyrian" -m644 *.dat *.lvl *.shp *.snd \

@@ -85,9 +85,6 @@ function build_packages {
       echo -e "${COL_GREEN}build_packages:${COL_NONE} new package: ${COL_GREEN}$local_pkgname${COL_NONE} ($remote_pkgverrel => $local_pkgverrel)"
       echo -e "${COL_GREEN}build_packages:${COL_NONE} building ${COL_GREEN}$local_pkgname${COL_NONE} ($local_pkgverrel)"
       build_package "$line"
-      # install built package
-      #echo -e "${COL_GREEN}build_packages:${COL_NONE} installing ${COL_GREEN}$line/$local_pkgname-$local_pkgverrel.pkg.tar.zst${COL_NONE}"
-      #install_local_package $line/*.pkg.tar.zst
       echo -e "${COL_GREEN}build_packages:${COL_NONE} build sucess for ${COL_GREEN}$line/$local_pkgname-$local_pkgverrel.pkg.tar.zst${COL_NONE}"
       if [ $RR_UPLOAD ]; then
         echo -e "${COL_GREEN}build_packages:${COL_NONE} uploading ${COL_GREEN}$local_pkgname${COL_NONE} to retroroot repo"
