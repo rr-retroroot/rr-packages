@@ -26,4 +26,7 @@ package() {
 	cd "$srcdir/tyrian21"
 	install -Dt "$pkgdir/usr/share/games/tyrian" -m644 *.dat *.lvl *.shp *.snd \
 		demo.* music.mus tyrend.anm tyrian.{cdt,hdt,pic} tshp2.pcx
+
+  # every retroroot package needs an icon, a preview image, and a path to the executable
+  # TODO
 }

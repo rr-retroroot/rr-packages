@@ -32,7 +32,7 @@ function build_package {
 }
 
 function build_packages {
-  RR_SSH_HOST="mydedibox.fr"
+  RR_SSH_HOST="us.mydedibox.fr"
   remote_packages=`pacman -Sl`
 
   # parse args
