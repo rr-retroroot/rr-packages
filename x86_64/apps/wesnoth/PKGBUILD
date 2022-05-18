@@ -21,8 +21,6 @@ build() {
       -Bbuild \
       -DCMAKE_INSTALL_PREFIX=/usr \
       -DENABLE_DISPLAY_REVISION=OFF
-      #-DENABLE_TOOLS=ON \
-      #-DFIFO_DIR=/run/wesnothd \
   ninja -C build
 }
 
@@ -33,8 +31,5 @@ package() {
 
   # See http://forums.wesnoth.org/viewtopic.php?t=51038
   echo "Linux repository" > "$pkgdir"/usr/share/wesnoth/data/dist
-
-  #mkdir -p "$pkgdir"/usr/lib/{tmpfiles.d,systemd/system}
-  #sed "s|@FIFO_DIR@|/run/wesnothd|" packaging/systemd/wesnothd.tmpfiles.conf.in > "$pkgdir"/usr/lib/tmpfiles.d/wesnothd.conf
-  #sed -e "s|@FIFO_DIR@|/run/wesnothd|" -e "s|@BINARY_SUFFIX@||" -e "s|@CMAKE_INSTALL_FULL_BINDIR@|/usr/bin|" packaging/systemd/wesnothd.service.in > "$pkgdir"/usr/lib/systemd/system/wesnothd.service
 }
+
