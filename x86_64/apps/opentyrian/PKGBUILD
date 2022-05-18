@@ -1,6 +1,6 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
-pkgname=opentyrian-retroroot
+pkgname=rr-opentyrian
 pkgver=2.1.20220318
 pkgrel=1
 pkgdesc='Open Source port of the classic DOS shoot-em-up Tyrian'
