@@ -1,0 +1,40 @@
+# Maintainer: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=wesnoth
+pkgver=1.16.2
+pkgrel=1
+pkgdesc="A turn-based strategy game on a fantasy world"
+arch=('x86_64')
+license=('GPL')
+url="http://www.wesnoth.org/"
+depends=('sdl2_mixer' 'sdl2_image' 'boost' 'pango' 'dbus')
+makedepends=('boost' 'cmake' 'git' 'ninja')
+options=(!emptydirs)
+source=("https://github.com/wesnoth/wesnoth/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('4d02e1cb499c3f5769cf25e6598974903d991ea5a7e5f09ebac86dd47b4c0d0b')
+
+build() {
+  cd "${pkgname}-${pkgver}"
+
+  cmake \
+      -GNinja \
+      -Bbuild \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DENABLE_DISPLAY_REVISION=OFF
+      #-DENABLE_TOOLS=ON \
+      #-DFIFO_DIR=/run/wesnothd \
+  ninja -C build
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+
+  DESTDIR="$pkgdir" ninja -C build install
+
+  # See http://forums.wesnoth.org/viewtopic.php?t=51038
+  echo "Linux repository" > "$pkgdir"/usr/share/wesnoth/data/dist
+
+  #mkdir -p "$pkgdir"/usr/lib/{tmpfiles.d,systemd/system}
+  #sed "s|@FIFO_DIR@|/run/wesnothd|" packaging/systemd/wesnothd.tmpfiles.conf.in > "$pkgdir"/usr/lib/tmpfiles.d/wesnothd.conf
+  #sed -e "s|@FIFO_DIR@|/run/wesnothd|" -e "s|@BINARY_SUFFIX@||" -e "s|@CMAKE_INSTALL_FULL_BINDIR@|/usr/bin|" packaging/systemd/wesnothd.service.in > "$pkgdir"/usr/lib/systemd/system/wesnothd.service
+}
