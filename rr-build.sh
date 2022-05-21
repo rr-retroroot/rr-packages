@@ -3,7 +3,6 @@
 set -e
 
 REPO_PATH=rr-repo
-
 COL_GREEN='\033[0;32m'
 COL_NONE='\033[0m'
 
@@ -42,11 +41,11 @@ function build_packages {
       -f) echo -e "${COL_GREEN}build_packages${COL_NONE}: force rebuild all packages"
           RR_BUILD_ALL=true
         ;;
-      -u) echo -e "${COL_GREEN}build_packages${COL_NONE}: uploading packages to retroroot repo with specified user"
+      -u) echo -e "${COL_GREEN}build_packages${COL_NONE}: uploading packages to retroroot repos with specified user"
           RR_UPLOAD=true
           shift && RR_SSH_USER="$1"
         ;;
-      -h) echo -e "${COL_GREEN}build_packages${COL_NONE}: uploading packages to retroroot repo with specified host"
+      -h) echo -e "${COL_GREEN}build_packages${COL_NONE}: uploading packages to retroroot repos with specified host"
           RR_UPLOAD=true
           shift && RR_SSH_HOST="$1"
         ;;
@@ -86,7 +85,7 @@ function build_packages {
       build_package "$pkgpath"
       echo -e "${COL_GREEN}build_packages:${COL_NONE} build sucess for ${COL_GREEN}$pkgpath/$local_pkgname-$local_pkgverrel.pkg.tar.xz${COL_NONE}"
       if [ $RR_UPLOAD ]; then
-        echo -e "${COL_GREEN}build_packages:${COL_NONE} uploading ${COL_GREEN}$local_pkgname${COL_NONE} to retroroot repo"
+        echo -e "${COL_GREEN}build_packages:${COL_NONE} uploading ${COL_GREEN}$local_pkgname${COL_NONE} to retroroot repos"
         scp $pkgpath/*.pkg.tar.xz $RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/ || exit 1
         scp $pkgpath/*.pkg.tar.xz $RR_SSH_USER@$RR_SSH_HOST_MIRROR:/var/www/retroroot/packages/ || exit 1
         pacbrew-repo-add ${REPO_PATH}/retroroot.db.tar.gz $pkgpath/*.pkg.tar.xz || exit 1
@@ -98,9 +97,9 @@ function build_packages {
 
   done
 
-  # upload updated repo files and cleanup
+  # upload updated repos files and cleanup
   if [ $RR_UPLOAD ]; then
-    echo -e "${COL_GREEN}build_packages:${COL_NONE} updating retroroot repo with new packages..."
+    echo -e "${COL_GREEN}build_packages:${COL_NONE} updating retroroot repos with new packages..."
     scp ${REPO_PATH}/* $RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/ || exit 1
     scp ${REPO_PATH}/* $RR_SSH_USER@$RR_SSH_HOST_MIRROR:/var/www/retroroot/packages/ || exit 1
     rm -rf ${REPO_PATH}

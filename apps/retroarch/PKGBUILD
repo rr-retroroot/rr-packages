@@ -1,6 +1,6 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
-pkgname=rr-retroarch
+pkgname=retroarch
 pkgver=1.10.3
 pkgrel=1
 pkgdesc='Reference frontend for the libretro API'
