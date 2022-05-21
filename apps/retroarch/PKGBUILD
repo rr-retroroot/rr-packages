@@ -1,0 +1,29 @@
+# Maintainer: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=rr-retroarch
+pkgver=1.10.3
+pkgrel=1
+pkgdesc='Reference frontend for the libretro API'
+arch=('any')
+url='http://www.libretro.com/'
+license=('GPL')
+
+# every retroroot pkg must be a member of "game", "emulator", "app" or "system" group
+groups=('game' 'libretro')
+
+# installed packages
+depends=(retroarch retroarch-assets-ozone libretro-shaders)
+
+# icon: 128x128, preview: 512x512
+source=('rr-exec' 'rr-icon.png' 'rr-preview.png')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+package() {
+  # retroroot packages needs to be installed in "/home/rr/apps/${pkgname}"
+  install -d "$pkgdir/home/rr/apps/$pkgname"
+  
+  install -m755 rr-exec "$pkgdir/home/rr/apps/$pkgname"
+  install -m644 rr-icon.png "$pkgdir/home/rr/apps/$pkgname"
+  install -m644 rr-preview.png "$pkgdir/home/rr/apps/$pkgname"
+}
+
