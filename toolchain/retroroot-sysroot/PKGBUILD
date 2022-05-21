@@ -1,16 +1,14 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
-_arch=x86_64
-
-pkgname=retroroot-sysroot-${_arch}
-pkgver=0.0.1
+pkgname=retroroot-sysroot-x86_64
+pkgver=0.0.2
 pkgrel=1
-pkgdesc='retroroot toolchain sysroot'
-arch=("${_arch}")
+pkgdesc="retroroot toolchain sysroot (x86_64)"
+arch=(any)
 url='https://github.com/rr-retroroot/rr-rootfs'
 license=('zlib')
 source=("${url}/releases/download/v${pkgver}/retroroot-sysroot-desktop-${_arch}.tar.xz")
-sha256sums=('91d9088c39d59c9367abe197c6ade26995f25212bf151a28cff2bd15bf5c440c')
+sha256sums=('SKIP')
 options=(!strip !docs !libtool emptydirs)
 depends=('retroroot-configure')
 groups=("retroroot-toolchain-${_arch}")

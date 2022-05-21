@@ -4,8 +4,8 @@
 # No warranty is given.
 
 export PKG_CONFIG_DIR=
-export PKG_CONFIG_SYSROOT_DIR=/opt/retroroot/target/@TRIPLE@
-export PKG_CONFIG_LIBDIR=/opt/retroroot/target/@TRIPLE@/usr/lib/pkgconfig:/opt/retroroot/target/@TRIPLE@/usr/share/pkgconfig
+export PKG_CONFIG_SYSROOT_DIR=/opt/pacbrew/retroroot/target/@TRIPLE@
+export PKG_CONFIG_LIBDIR=/opt/pacbrew/retroroot/target/@TRIPLE@/usr/lib/pkgconfig:/opt/pacbrew/retroroot/target/@TRIPLE@/usr/share/pkgconfig
 
 # You can use PKG_CONFIG_PATH_CUSTOM to tweak pkg-config behavior further
 export PKG_CONFIG_PATH=${PKG_CONFIG_PATH_CUSTOM}:${PKG_CONFIG_LIBDIR}

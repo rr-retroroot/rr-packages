@@ -5,14 +5,14 @@ pkgver=1
 pkgrel=1
 pkgdesc='retroroot script providing common environment variables and functions.'
 arch=('any')
-url='https://github.com/PacBrew'
+url='https://github.com/rr-retroroot'
 license=('MIT')
 source=('retroroot-env')
 md5sums=('SKIP')
 groups=('retroroot-toolchain')
 
 package() {
-  install -d ${pkgdir}/opt/pacbrew/retroroot
-  install -m755 retroroot-env ${pkgdir}/opt/pacbrew/retroroot
+  install -d ${pkgdir}/opt/retroroot
+  install -m755 retroroot-env ${pkgdir}/opt/retroroot
 }
 

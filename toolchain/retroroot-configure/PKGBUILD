@@ -13,7 +13,7 @@ md5sums=('SKIP')
 groups=('retroroot-toolchain')
 
 package() {
-  install -d "${pkgdir}"/opt/pacbrew/retroroot
-  install -m 755 retroroot-configure "${pkgdir}"/opt/pacbrew/retroroot
+  install -d "${pkgdir}"/opt/retroroot
+  install -m 755 retroroot-configure "${pkgdir}"/opt/retroroot
 }
 

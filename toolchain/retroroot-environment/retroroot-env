@@ -7,7 +7,7 @@ if [ -z "${_arch}" ]; then
 fi
 
 if [ -z "${RETROROOT_HOME}" ]; then
-    export RETROROOT_HOME=/opt/pacbrew/retroroot
+    export RETROROOT_HOME=/opt/retroroot
 fi
 
 export PATH=$PATH:$RETROROOT_HOME
