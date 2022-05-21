@@ -75,7 +75,6 @@ function build_packages {
     # get remote package name and version
     remote_pkgname=`echo "$remote_packages" | grep -E "(^| )$local_pkgname( |$)" | awk '{print $2}'`
     remote_pkgverrel=`echo "$remote_packages" | grep -E "(^| )$local_pkgname( |$)" | awk '{print $3}'`
-    echo $remote_pkgname $remote_pkgverrel $local_pkgname
     if [ -z "$remote_pkgverrel" ]; then
       remote_pkgverrel="n/a"
     fi
