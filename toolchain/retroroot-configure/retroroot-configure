@@ -1,0 +1,20 @@
+#!/bin/sh
+
+#source /opt/pacbrew/retroroot/retroroot-env $1
+target=$1
+shift
+
+./configure \
+  --host=$target-linux-gnu \
+  --target=$target-linux-gnu \
+  --build=${CHOST} \
+  --prefix=${RETROROOT_PREFIX} \
+  --libdir=${RETROROOT_PREFIX_LIB} \
+  --includedir=${RETROROOT_PREFIX_INCLUDE} \
+  --disable-shared \
+  --enable-static \
+  "$@"
+
+# TODO: verify this...
+#--target=$target-linux-gnu \
+

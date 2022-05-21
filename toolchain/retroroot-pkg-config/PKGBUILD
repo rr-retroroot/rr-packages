@@ -1,0 +1,29 @@
+# Maintainer: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=retroroot-pkg-config
+pkgver=1
+pkgrel=1
+pkgdesc='retroroot pkg-config support script'
+arch=('any')
+url='http://pkg-config.freedesktop.org/'
+license=('zlib')
+source=('pkgconfig.sh')
+md5sums=('SKIP')
+groups=('retroroot-toolchain')
+
+_architectures="aarch64 x86_64"
+
+build() {
+  for _arch in ${_architectures}; do
+    sed "s|@TRIPLE@|${_arch}|g" pkgconfig.sh > ${_arch}-pkg-config
+  done
+}
+
+package() {
+  for _arch in ${_architectures}; do
+    install -d ${pkgdir}/opt/pacbrew/retroroot/target/${_arch}/usr/bin
+    install -m755 ${_arch}-pkg-config ${pkgdir}/opt/pacbrew/retroroot/target/${_arch}/usr/bin
+    install -m755 ${_arch}-pkg-config ${pkgdir}/opt/pacbrew/retroroot/target/${_arch}/usr/bin/pkg-config
+  done
+}
+
