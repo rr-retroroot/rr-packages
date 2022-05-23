@@ -2,14 +2,14 @@
 
 pkgname=rr-retroarch
 pkgver=1.10.3
-pkgrel=3
+pkgrel=4
 pkgdesc='Reference frontend for the libretro API'
 arch=('any')
 url='http://www.libretro.com/'
 license=('GPL')
 
 # every retroroot pkg must be a member of "game", "emulator", "app" or "system" group
-groups=('game' 'libretro')
+groups=('emulator')
 
 # installed packages
 depends=(retroarch retroarch-assets-ozone libretro-shaders)
