@@ -1,0 +1,16 @@
+# Maintainer: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=rr-libretro-ppsspp
+pkgver=31872
+pkgrel=1
+pkgdesc='Sony PlayStation Portable core for RetroArch'
+arch=('any')
+url='https://github.com/libretro/ppsspp'
+license=('GPL')
+
+# every retroroot pkg must be a member of "game", "emulator", "app" or "system" group
+groups=('emulator')
+
+# installed packages
+depends=(rr-retroarch libretro-ppsspp ppsspp-assets)
+

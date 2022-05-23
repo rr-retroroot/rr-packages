@@ -2,7 +2,7 @@
 
 pkgname=rr-retroarch
 pkgver=1.10.3
-pkgrel=4
+pkgrel=5
 pkgdesc='Reference frontend for the libretro API'
 arch=('any')
 url='http://www.libretro.com/'
@@ -12,7 +12,7 @@ license=('GPL')
 groups=('emulator')
 
 # installed packages
-depends=(retroarch retroarch-assets-ozone libretro-shaders)
+depends=(retroarch libretro-core-info retroarch-assets-ozone libretro-shaders)
 
 # icon: 128x128, preview: 512x512
 source=('rr-run' 'rr-icon.png' 'rr-preview.png')
