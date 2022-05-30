@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
-#source /opt/pacbrew/retroroot-env $1
 target=$1
 shift
+
+source /opt/retroroot/rr-env $target
 
 ./configure \
   --host=$target-linux-gnu \
@@ -14,7 +15,4 @@ shift
   --disable-shared \
   --enable-static \
   "$@"
-
-# TODO: verify this...
-#--target=$target-linux-gnu \
 

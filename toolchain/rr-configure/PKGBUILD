@@ -1,0 +1,19 @@
+# Maintainer: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=rr-configure
+pkgver=1
+pkgrel=1
+arch=(any)
+pkgdesc="retroroot configure wrapper"
+depends=('rr-environment' 'rr-pkg-config')
+license=("GPL")
+url="https://github.com/rr-retroroot/rr-packages"
+source=("rr-configure")
+md5sums=('SKIP')
+groups=('rr-toolchain')
+
+package() {
+  install -d "${pkgdir}"/opt/retroroot
+  install -m 755 rr-configure "${pkgdir}"/opt/retroroot
+}
+

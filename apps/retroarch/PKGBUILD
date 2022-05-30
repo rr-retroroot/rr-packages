@@ -2,28 +2,101 @@
 
 pkgname=rr-retroarch
 pkgver=1.10.3
-pkgrel=5
+pkgrel=1
 pkgdesc='Reference frontend for the libretro API'
-arch=('any')
+arch=('x86_64' 'aarch64')
 url='http://www.libretro.com/'
 license=('GPL')
 
 # every retroroot pkg must be a member of "game", "emulator", "app" or "system" group
 groups=('emulator')
 
-# installed packages
-depends=(retroarch libretro-core-info retroarch-assets-ozone libretro-shaders)
+# a retroroot package should not depends on anything as required libraries
+# are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
+# the package should build and link a static library here.
+#depends=()
 
-# icon: 128x128, preview: 512x512
-source=('rr-run' 'rr-icon.png' 'rr-preview.png')
-sha256sums=('SKIP' 'SKIP' 'SKIP')
+retroarch_commit=af7db7c08ff531e57488a65aa62352b262e96387
+assets_commit=1daf54ede25763c3ae196303d9dc27610a2338a7
+core_info_commit=fdaa9195bb8c0d45db943dff1ed7d0b6763a6701
+source=(
+  # retroarch
+  "git+https://github.com/libretro/RetroArch.git#commit=${retroarch_commit}"
+  "retroarch-config.patch"
+  # retroarch assets
+  "git+https://github.com/libretro/retroarch-assets.git#commit=${assets_commit}"
+  # retroarch core info
+  "git+https://github.com/libretro/libretro-core-info.git#commit=${core_info_commit}"
+  # icon: 128x128, preview: 512x512
+  'rr-run' 'rr-icon.png' 'rr-preview.png'
+)
+sha256sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP' 'SKIP' 'SKIP'
+)
+
+pkgver() {
+  cd RetroArch
+  printf "%s" "$(git describe --first-parent --long --tags | sed 's/v//g;s/\([^-]*-\)g/r\1/;s/-/./g')"
+}
+
+prepare() {
+  cd RetroArch
+  patch -Np1 -i ../retroarch-config.patch
+}
+
+build() {
+  { echo; echo "Building $pkgname-$pkgver (${CARCH})"; echo; }
+
+  cd RetroArch
+  
+  source /opt/retroroot/rr-env ${CARCH}
+
+  ./configure --prefix=${RETROROOT_PREFIX} \
+    --sysconfdir=${RETROROOT_PREFIX}/etc \
+    --host=${CARCH}-linux-gnu \
+    --build=${CARCH}-linux-gnu \
+    --disable-x11 \
+    --disable-wayland \
+    --disable-videocore \
+    --disable-qt \
+    --disable-builtinflac \
+    --disable-builtinmbedtls \
+    --disable-builtinzlib \
+    --disable-cg \
+    --enable-kms \
+    --enable-dbus
+  make $MAKEFLAGS
+  
+  # TODO
+  #make $MAKEFLAGS -C libretro-common/audio/dsp_filters
+  #make $MAKEFLAGS -C gfx/video_filters
+}
 
 package() {
-  # retroroot packages needs to be installed in "/home/rr/apps/${pkgname}"
-  install -d "$pkgdir/home/rr/apps/$pkgname"
+  # package retroarch
+  cd RetroArch
+  make DESTDIR="${pkgdir}" install
   
-  install -m755 rr-run "$pkgdir/home/rr/apps/$pkgname"
-  install -m644 rr-icon.png "$pkgdir/home/rr/apps/$pkgname"
-  install -m644 rr-preview.png "$pkgdir/home/rr/apps/$pkgname"
+  # package assets
+  cd "$srcdir"/retroarch-assets
+  source /opt/retroroot/rr-env ${CARCH}
+  install -dm 755 "${pkgdir}"${RETROROOT_PREFIX_SHARE}/retroarch/assets
+  cp -dr --no-preserve=ownership glui "${pkgdir}"${RETROROOT_PREFIX_SHARE}/retroarch/assets/
+  cp -dr --no-preserve=ownership ozone "${pkgdir}"${RETROROOT_PREFIX_SHARE}/retroarch/assets/
+  cp -dr --no-preserve=ownership xmb "${pkgdir}"${RETROROOT_PREFIX_SHARE}/retroarch/assets/
+  
+  # package core info
+  cd $srcdir/libretro-core-info
+  make DESTDIR="${pkgdir}" install
+
+  # retroroot packages data needs to be installed in "/home/rr/apps/${pkgname}"
+  install -d "$pkgdir/home/rr/apps/$pkgname"
+  install -m755 $srcdir/rr-run "$pkgdir/home/rr/apps/$pkgname"
+  install -m644 $srcdir/rr-icon.png "$pkgdir/home/rr/apps/$pkgname"
+  install -m644 $srcdir/rr-preview.png "$pkgdir/home/rr/apps/$pkgname"
 }
 

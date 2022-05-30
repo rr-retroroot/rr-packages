@@ -1,18 +1,18 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
-pkgname=retroroot-environment
+pkgname=rr-environment
 pkgver=1
 pkgrel=1
 pkgdesc='retroroot script providing common environment variables and functions.'
 arch=('any')
-url='https://github.com/rr-retroroot'
+url='https://github.com/rr-retroroot/rr-packages'
 license=('MIT')
-source=('retroroot-env')
+source=('rr-env')
 md5sums=('SKIP')
-groups=('retroroot-toolchain')
+groups=('rr-toolchain')
 
 package() {
   install -d ${pkgdir}/opt/retroroot
-  install -m755 retroroot-env ${pkgdir}/opt/retroroot
+  install -m755 rr-env ${pkgdir}/opt/retroroot
 }
 
