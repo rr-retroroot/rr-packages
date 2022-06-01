@@ -1,7 +1,7 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
 pkgname=rr-retroarch
-pkgver=1.10.3
+pkgver=1.10.3.r248.af7db7c08f
 pkgrel=1
 pkgdesc='Reference frontend for the libretro API'
 arch=('x86_64' 'aarch64')

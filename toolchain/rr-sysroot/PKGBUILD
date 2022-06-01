@@ -1,7 +1,7 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
 pkgname=rr-sysroot
-pkgver=0.0.4
+pkgver=0.0.5
 pkgrel=1
 pkgdesc="retroroot toolchain sysroot (x86_64 and aarch64)"
 arch=(any)

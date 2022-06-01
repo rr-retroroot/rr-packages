@@ -34,7 +34,7 @@ build() {
   autoreconf -fi
   /opt/retroroot/rr-configure ${CARCH} \
     --program-prefix="" \
-    --with-sdl-prefix=${RETROROOT_SYSROOT} \
+    --with-sdl-prefix=${RETROROOT_SYSROOT}/usr \
     --without-x
 
   make $MAKEFLAGS

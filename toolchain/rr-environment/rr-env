@@ -11,7 +11,7 @@ if [ -z "${RETROROOT_HOME}" ]; then
 fi
 
 # sysroot path
-export RETROROOT_SYSROOT=${RETROROOT_HOME}/target/${_arch}/usr
+export RETROROOT_SYSROOT=${RETROROOT_HOME}/target/${_arch}
 
 # toolchain setup
 export RETROROOT_TOOLCHAIN=/usr
@@ -36,15 +36,15 @@ export AS="${RETROROOT_AS} --sysroot=${RETROROOT_SYSROOT}"
 export NM="${RETROROOT_NM} --sysroot=${RETROROOT_SYSROOT}"
 export RANLIB="${RETROROOT_RANLIB} --sysroot=${RETROROOT_SYSROOT}"
 export STRIP="${RETROROOT_STRIP} --sysroot=${RETROROOT_SYSROOT}"
-export CFLAGS="-isysroot ${RETROROOT_SYSROOT} -I${RETROROOT_SYSROOT}/include -O2 -fexceptions ${CFLAGS}"
-export CPPFLAGS="${RETROROOT_CFLAGS} ${CPPFLAGS}"
-export CXXFLAGS="${RETROROOT_CFLAGS} ${CXXFLAGS}"
-export LDFLAGS="-L${RETROROOT_SYSROOT}/lib -Wl,-O1,--sort-common,--as-needed ${LDFLAGS}"
+export CFLAGS="--sysroot=${RETROROOT_SYSROOT} -I${RETROROOT_SYSROOT}/usr/include -O2 ${CFLAGS}"
+export CPPFLAGS="${CFLAGS} ${CPPFLAGS} -fexceptions"
+export CXXFLAGS="${CFLAGS} ${CXXFLAGS} -fexceptions"
+export LDFLAGS="-L${RETROROOT_SYSROOT}/usr/lib -Wl,-O1,--sort-common,--as-needed ${LDFLAGS}"
 
 # pkg config setup
 export PKG_CONFIG_DIR=
-export PKG_CONFIG_SYSROOT_DIR=${RETROROOT_SYSROOT}
-export PKG_CONFIG_LIBDIR=${RETROROOT_SYSROOT}/lib/pkgconfig:${RETROROOT_SYSROOT}/share/pkgconfig
+export PKG_CONFIG_SYSROOT_DIR=${RETROROOT_SYSROOT}/usr
+export PKG_CONFIG_LIBDIR=${RETROROOT_SYSROOT}/usr/lib/pkgconfig:${RETROROOT_SYSROOT}/usr/share/pkgconfig
 export PKG_CONFIG_PATH=${PKG_CONFIG_PATH_CUSTOM}:${PKG_CONFIG_LIBDIR}
 
 # prefix setup
@@ -55,5 +55,5 @@ export RETROROOT_PREFIX_LIB=${RETROROOT_PREFIX}/lib
 export RETROROOT_PREFIX_ETC=${RETROROOT_PREFIX}/etc
 export RETROROOT_PREFIX_SHARE=${RETROROOT_PREFIX}/share
 
-export PATH="${RETROROOT_HOME}:${RETROROOT_SYSROOT}/bin:$PATH"
+export PATH="${RETROROOT_HOME}:${RETROROOT_SYSROOT}/usr/bin:$PATH"
 
