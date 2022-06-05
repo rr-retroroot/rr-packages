@@ -28,15 +28,15 @@ export RETROROOT_RANLIB=${RETROROOT_TOOLS_COMPILER_PREFIX}ranlib
 export RETROROOT_STRIP=${RETROROOT_TOOLS_COMPILER_PREFIX}strip
 export RETROROOT_PKGCONFIG=${RETROROOT_TOOLS_COMPILER_PREFIX}pkg-config
 
+export AS="${RETROROOT_AS} --sysroot=${RETROROOT_SYSROOT}"
 export CC="${RETROROOT_CC} --sysroot=${RETROROOT_SYSROOT}"
 export CXX="${RETROROOT_CXX} --sysroot=${RETROROOT_SYSROOT}"
 export LD="${RETROROOT_LD} --sysroot=${RETROROOT_SYSROOT}"
-export AR="${RETROROOT_AR} --sysroot=${RETROROOT_SYSROOT}"
-export AS="${RETROROOT_AS} --sysroot=${RETROROOT_SYSROOT}"
-export NM="${RETROROOT_NM} --sysroot=${RETROROOT_SYSROOT}"
-export RANLIB="${RETROROOT_RANLIB} --sysroot=${RETROROOT_SYSROOT}"
-export STRIP="${RETROROOT_STRIP} --sysroot=${RETROROOT_SYSROOT}"
-export CFLAGS="--sysroot=${RETROROOT_SYSROOT} -I${RETROROOT_SYSROOT}/usr/include -O2 ${CFLAGS}"
+export AR="${RETROROOT_AR}"
+export NM="${RETROROOT_NM}"
+export RANLIB="${RETROROOT_RANLIB}"
+export STRIP="${RETROROOT_STRIP}"
+export CFLAGS="-I${RETROROOT_SYSROOT}/usr/include -O2 -pipe -fno-plt ${CFLAGS}"
 export CPPFLAGS="${CFLAGS} ${CPPFLAGS} -fexceptions"
 export CXXFLAGS="${CFLAGS} ${CXXFLAGS} -fexceptions"
 export LDFLAGS="-L${RETROROOT_SYSROOT}/usr/lib -Wl,-O1,--sort-common,--as-needed ${LDFLAGS}"
