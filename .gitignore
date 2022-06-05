@@ -1,6 +1,5 @@
 rr-repo*
 sources
-packages
 *.tar.xz.part
 *.tar.xz
 src
