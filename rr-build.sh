@@ -10,6 +10,19 @@ COL_G='\033[0;32m'
 COL_Y='\033[0;33m'
 COL_N='\033[0m'
 
+# cleanup on exit
+function cleanup {
+  if [ $? -ne 0 ]; then
+    echo "${COL_R}something went wrong...\n${COL_N}"
+  fi
+  rm -rf rr-repo-x86_64
+  rm -rf rr-repo-aarch64
+  rm -rf rr-repo-toolchain
+}
+
+# set exit trap
+trap cleanup EXIT
+
 function die() {
   printf "${COL_R}ERR: %s\n${COL_N}" "$@" 1>&2
 	exit $retval
@@ -17,7 +30,7 @@ function die() {
 
 function pacman_sync() {
   echo -e "${COL_G}pacman_sync:${COL_N} synching repositories..."
-  #sudo pacbrew-pacman --config pacman.conf -Syy &> /dev/null || die "pacman_sync: repo sync failed"
+  sudo pacbrew-pacman --config pacman.conf -Syy &> /dev/null || die "pacman_sync: repo sync failed"
   echo -e "${COL_G}pacman_sync:${COL_N} ok"
 }
 
@@ -26,9 +39,9 @@ function download_repos() {
   rm -rf rr-repo-x86_64 && mkdir -p rr-repo-x86_64
   rm -rf rr-repo-aarch64 && mkdir -p rr-repo-aarch64
   rm -rf rr-repo-toolchain && mkdir -p rr-repo-toolchain
-  #scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/x86_64/retroroot-*.*" rr-repo-x86_64 || die "build_packages: repo download error"
-  #scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/aarch64/retroroot-*.*" rr-repo-aarch64 || die "build_packages: repo download error"
-  #scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/toolchain/retroroot-*.*" rr-repo-toolchain || die "build_packages: repo download error"
+  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/x86_64/retroroot-*.*" rr-repo-x86_64 || die "build_packages: repo download error"
+  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/aarch64/retroroot-*.*" rr-repo-aarch64 || die "build_packages: repo download error"
+  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/toolchain/retroroot-*.*" rr-repo-toolchain || die "build_packages: repo download error"
 }
 
 function upload_repos() {
@@ -36,9 +49,6 @@ function upload_repos() {
   scp rr-repo-x86_64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/x86_64/" || die "build_packages: repo upload error"
   scp rr-repo-aarch64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/aarch64/" || die "build_packages: repo upload error"
   scp rr-repo-toolchain/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/toolchain/" || die "build_packages: repo upload error"
-  rm -rf rr-repo-x86_64
-  rm -rf rr-repo-aarch64
-  rm -rf rr-repo-toolchain
 }
 
 # upload_pkg PKGNAME PKGPATH ARCH

@@ -2,7 +2,7 @@
 
 pkgname=rr-splash
 pkgver=1
-pkgrel=2
+pkgrel=3
 pkgdesc="RetroRoot Splash Screen"
 arch=('x86_64' 'aarch64')
 license=('GPL')
@@ -13,8 +13,9 @@ groups=('system')
 
 # a retroroot package should not depends on anything as required libraries
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
-# the package should build and link a static library here.
-#depends=()
+# the package should build and link a static library here..
+# this package is a special case...
+depends=('rr-system')
 
 source=("git+$url.git")
 sha512sums=('SKIP')
