@@ -101,6 +101,7 @@ function build_packages() {
   pacman_sync
   # get remote package list
   RR_REMOTE_PACKAGES=$(pacbrew-pacman -Sl)
+  RR_BUILD_PATH="*"
 
   # parse args
   while test $# -gt 0
@@ -109,13 +110,16 @@ function build_packages() {
       -f) echo -e "${COL_G}build_packages${COL_N}: force rebuild all packages"
           RR_BUILD_ALL=true
         ;;
-      -u) echo -e "${COL_G}build_packages${COL_N}: uploading packages to retroroot repos with specified user"
-          RR_UPLOAD=true
-          shift && RR_SSH_USER="$1"
-        ;;
       -h) echo -e "${COL_G}build_packages${COL_N}: uploading packages to retroroot repos with specified host"
           RR_UPLOAD=true
           shift && RR_SSH_HOST="$1"
+        ;;
+      -p) shift && RR_BUILD_PATH="$1/"
+          echo -e "${COL_G}build_packages${COL_N}: building packages in specified path: ${RR_BUILD_PATH}"
+        ;;
+      -u) echo -e "${COL_G}build_packages${COL_N}: uploading packages to retroroot repos with specified user"
+          RR_UPLOAD=true
+          shift && RR_SSH_USER="$1"
         ;;
     esac
     shift
@@ -128,7 +132,7 @@ function build_packages() {
 
   # loop through packages 
   shopt -s globstar
-  for pkg in **/PKGBUILD; do
+  for pkg in ${RR_BUILD_PATH}*/PKGBUILD; do
     # get pkgbuild basename
     local pkgpath=$(dirname "$pkg")
     
