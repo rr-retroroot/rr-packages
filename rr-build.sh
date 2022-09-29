@@ -16,6 +16,7 @@ function cleanup {
     echo "${COL_R}something went wrong...\n${COL_N}"
   fi
   rm -rf rr-repo-x86_64
+  rm -rf rr-repo-armv7h
   rm -rf rr-repo-aarch64
   rm -rf rr-repo-toolchain
 }
@@ -31,24 +32,28 @@ function die() {
 function pacman_sync() {
   echo -e "${COL_G}pacman_sync:${COL_N} synching repositories..."
   sudo pacbrew-pacman --config pacman.conf -Syy &> /dev/null || die "pacman_sync: repo sync failed"
+  sudo pacbrew-pacman --config pacman.conf -S --noconfirm --needed rr-toolchain || die "pacman_sync: rr-toolchain installation failed"
   echo -e "${COL_G}pacman_sync:${COL_N} ok"
 }
 
 function download_repos() {
   echo -e "${COL_G}build_packages:${COL_N} downloading retroroot repos..."
   rm -rf rr-repo-x86_64 && mkdir -p rr-repo-x86_64
+  rm -rf rr-repo-armv7h && mkdir -p rr-repo-armv7h
   rm -rf rr-repo-aarch64 && mkdir -p rr-repo-aarch64
   rm -rf rr-repo-toolchain && mkdir -p rr-repo-toolchain
-  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/x86_64/retroroot-*.*" rr-repo-x86_64 || die "build_packages: repo download error"
-  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/aarch64/retroroot-*.*" rr-repo-aarch64 || die "build_packages: repo download error"
-  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/toolchain/retroroot-*.*" rr-repo-toolchain || die "build_packages: repo download error"
+  #scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/x86_64/apps/retroroot-*.*" rr-repo-x86_64 || die "build_packages: repo download error"
+  #scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/armv7h/apps/retroroot-*.*" rr-repo-armv7h || die "build_packages: repo download error"
+  #scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/aarch64/apps/retroroot-*.*" rr-repo-aarch64 || die "build_packages: repo download error"
+  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/toolchain/retroroot-*.*" rr-repo-toolchain || die "build_packages: repo download error"
 }
 
 function upload_repos() {
   echo -e "${COL_G}build_packages:${COL_N} uploading retroroot repos..."
-  scp rr-repo-x86_64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/x86_64/" || die "build_packages: repo upload error"
-  scp rr-repo-aarch64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/aarch64/" || die "build_packages: repo upload error"
-  scp rr-repo-toolchain/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/toolchain/" || die "build_packages: repo upload error"
+  #scp rr-repo-x86_64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/x86_64/apps/" || die "build_packages: repo upload error"
+  #scp rr-repo-armv7h/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/armv7h/apps/" || die "build_packages: repo upload error"
+  #scp rr-repo-aarch64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/aarch64/apps/" || die "build_packages: repo upload error"
+  scp rr-repo-toolchain/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/toolchain/" || die "build_packages: repo upload error"
 }
 
 # upload_pkg PKGNAME PKGPATH ARCH
@@ -57,7 +62,7 @@ function upload_app_pkg() {
   local pkgpath=$2
   local pkgarch=$3
   echo -e "${COL_G}upload_app_pkg:${COL_N} uploading ${COL_G}$pkgname${COL_N} ($pkgarch) to retroroot repos"
-  scp "$pkgpath/"*-$pkgarch.pkg.tar.xz "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/apps/$pkgarch" || die "upload_app_pkg: scp to $RR_SSH_HOST failed"
+  scp "$pkgpath/"*-$pkgarch.pkg.tar.xz "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/$pkgarch/apps" || die "upload_app_pkg: scp to $RR_SSH_HOST failed"
   pacbrew-repo-add "rr-repo-$pkgarch/retroroot-$pkgarch.db.tar.gz" "$pkgpath/"*-$pkgarch.pkg.tar.xz || die "upload_app_pkg: repo-add failed"
 }
 
@@ -66,7 +71,7 @@ function upload_toolchain_pkg() {
   local pkgname=$1
   local pkgpath=$2
   echo -e "${COL_G}upload_toolchain_pkg:${COL_N} uploading ${COL_G}$pkgname${COL_N} to retroroot repos"
-  scp "$pkgpath/"*.pkg.tar.xz "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/toolchain" || die "upload_toolchain_pkg: scp to $RR_SSH_HOST failed"
+  scp "$pkgpath/"*.pkg.tar.xz "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/toolchain" || die "upload_toolchain_pkg: scp to $RR_SSH_HOST failed"
   pacbrew-repo-add "rr-repo-toolchain/retroroot-toolchain.db.tar.gz" "$pkgpath/"*.pkg.tar.xz || die "upload_toolchain_pkg: repo-add failed"
 }
 
@@ -99,6 +104,7 @@ function build_package() {
 function build_packages() {
   # sync pacman packages
   pacman_sync
+  
   # get remote package list
   RR_REMOTE_PACKAGES=$(pacbrew-pacman -Sl)
   RR_BUILD_PATH="*"
@@ -165,16 +171,15 @@ function build_packages() {
         fi
       else
         # build a "target" "app" package
-        echo -e "${COL_G}build_packages:${COL_N} building ${COL_G}$pkgname${COL_N} ($local_pkgver) (${COL_Y}x86_64${COL_N})"
-        build_package "$pkgpath" "x86_64"
-        if [ $RR_UPLOAD ]; then
-          upload_app_pkg "$pkgname" "$pkgpath" "x86_64"
-        fi
-        echo -e "${COL_G}build_packages:${COL_N} building ${COL_G}$pkgname${COL_N} ($local_pkgver) (${COL_Y}aarch64${COL_N})"
-        build_package "$pkgpath" "aarch64"
-        if [ $RR_UPLOAD ]; then
-          upload_app_pkg "$pkgname" "$pkgpath" "aarch64"
-        fi
+        #ARCHS="x86_64 armv7h aarch64"
+        ARCHS=""
+        for ARCH in ${ARCHS}; do
+          echo -e "${COL_G}build_packages:${COL_N} building ${COL_G}$pkgname${COL_N} ($local_pkgver) (${COL_Y}${ARCH}${COL_N})"
+          build_package "$pkgpath" "${ARCH}"
+          if [ $RR_UPLOAD ]; then
+            upload_app_pkg "$pkgname" "$pkgpath" "${ARCH}"
+          fi
+        done
         echo -e "${COL_G}build_packages:${COL_N} build sucess for ${COL_G}$pkgpath/$pkgname-$local_pkgver.pkg.tar.xz${COL_N}"
       fi
     else

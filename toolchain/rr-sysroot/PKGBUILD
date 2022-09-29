@@ -2,16 +2,17 @@
 
 pkgname=rr-sysroot
 pkgver=0.0.7
-pkgrel=1
-pkgdesc="retroroot toolchain sysroot (x86_64 and aarch64)"
+pkgrel=2
+pkgdesc="retroroot toolchain sysroot (x86_64, armv7h, aarch64)"
 arch=(any)
 url='https://github.com/rr-retroroot/rr-rootfs'
 license=('zlib')
 source=(
   "${url}/releases/download/v${pkgver}/retroroot-sysroot-x86_64.tar.xz"
+  "${url}/releases/download/v${pkgver}/retroroot-sysroot-armv7h.tar.xz"
   "${url}/releases/download/v${pkgver}/retroroot-sysroot-aarch64.tar.xz"
 )
-sha256sums=('SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
 options=(!strip !docs !libtool emptydirs)
 depends=('rr-configure')
 groups=('rr-toolchain')

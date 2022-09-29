@@ -14,9 +14,13 @@ fi
 export RETROROOT_SYSROOT=${RETROROOT_HOME}/target/${_arch}
 
 # toolchain setup
-export RETROROOT_TOOLCHAIN=/usr
+export RETROROOT_TOOLCHAIN=${RETROROOT_HOME}/host/${_arch}
 export RETROROOT_CROSS_PREFIX=$RETROROOT_TOOLCHAIN/bin
-export RETROROOT_TOOLS_COMPILER_PREFIX=${RETROROOT_CROSS_PREFIX}/${_arch}-linux-gnu-
+if [ ${_arch} == "armv7h" ]; then
+  export RETROROOT_TOOLS_COMPILER_PREFIX=${RETROROOT_CROSS_PREFIX}/${_arch}-linux-gnueabihf-
+else
+  export RETROROOT_TOOLS_COMPILER_PREFIX=${RETROROOT_CROSS_PREFIX}/${_arch}-linux-gnu-
+fi
 
 export RETROROOT_CC=${RETROROOT_TOOLS_COMPILER_PREFIX}gcc
 export RETROROOT_CXX=${RETROROOT_TOOLS_COMPILER_PREFIX}g++
@@ -40,6 +44,22 @@ export CFLAGS="-I${RETROROOT_SYSROOT}/usr/include -O2 -pipe -fno-plt -D__RETRORO
 export CPPFLAGS="${CFLAGS} ${CPPFLAGS} -fexceptions"
 export CXXFLAGS="${CFLAGS} ${CXXFLAGS} -fexceptions"
 export LDFLAGS="-L${RETROROOT_SYSROOT}/usr/lib -Wl,-O1,--sort-common,--as-needed ${LDFLAGS}"
+
+# arch specific
+if [ ${_arch} == "x86_64" ]; then
+  export CFLAGS="${CFLAGS}"
+  export CPPFLAGS="${CPPFLAGS}"
+  export CXXFLAGS="${CXXFLAGS}"
+elif [ ${_arch} == "armv7h" ]; then
+  export CFLAGS="${CFLAGS} -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4"
+  export CPPFLAGS="${CPPFLAGS} -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4"
+  export CXXFLAGS="${CXXFLAGS} -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4"
+elif [ ${_arch} == "aarch64" ]; then
+  export CFLAGS="${CFLAGS} -march=armv8-a -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits"
+  export CPPFLAGS="${CPPFLAGS} -march=armv8-a -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits"
+  export CXXFLAGS="${CXXFLAGS} -march=armv8-a -mfloat-abi=hard -mfpu=neon-fp-armv8 -mneon-for-64bits"
+else
+fi
 
 # pkg config setup
 export PKG_CONFIG_DIR=
