@@ -2,13 +2,13 @@
 
 create_data_partition() {
   DEVICE=$(blkid | grep RR-BOOT | cut -d ":" -f1) || launch_interactive_shell
-  DEVICE=${DEVICE::-1}
+  DEVICE=${DEVICE::-2}
   echo "Creating data partition on ${DEVICE}, please wait..."
   parted ${DEVICE} -- \
     mkpart primary ext2 1024 -1s \
     unit B
   partprobe
-  mke2fs -t ext4 -L "RR-DATA" ${DEVICE}2 || launch_interactive_shell
+  mke2fs -t ext4 -L "RR-DATA" ${DEVICE}p2 || launch_interactive_shell
 }
 
 run_latehook() {

@@ -4,7 +4,7 @@ pkgname=rr-powermanga
 pkgver=0.93.1
 pkgrel=1
 pkgdesc='An arcade 2D shoot-them-up game with 41 levels and more than 200 sprites'
-arch=('x86_64' 'aarch64')
+arch=('x86_64' 'armv7h' 'aarch64')
 url="http://linux.tlk.fr/games/Powermanga"
 license=('GPL3')
 
@@ -32,7 +32,7 @@ build() {
   source /opt/retroroot/rr-env ${CARCH}
   
   autoreconf -fi
-  /opt/retroroot/rr-configure ${CARCH} \
+  rr-configure-lib ${CARCH} \
     --program-prefix="" \
     --with-sdl-prefix=${RETROROOT_SYSROOT}/usr \
     --without-x

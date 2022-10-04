@@ -3,7 +3,7 @@
 pkgname=rr-toolchain-armv7h
 pkgver=12.2.1
 pkgrel=1
-pkgdesc="retroroot toolchain tools (armv7h)"
+pkgdesc="retroroot arm toolchain (armv7h)"
 arch=(any)
 url='https://snapshots.linaro.org/gnu-toolchain'
 license=('zlib')
@@ -17,5 +17,15 @@ groups=('rr-toolchain')
 package() {
   install -d ${pkgdir}/opt/retroroot/host/armv7h
   mv ${srcdir}/gcc-linaro-12.2.1-2022.09-x86_64_arm-linux-gnueabihf/* ${pkgdir}/opt/retroroot/host/armv7h
+  
+  # create symlinks for conveniance
+  # arm-linux-gnueabihf > armv7h-linux-gnu
+  cd ${pkgdir}/opt/retroroot/host/armv7h/bin
+  files="$(find . -type f)"
+  for i in $files; do
+    link="${i/arm/"armv7h"}"
+    link="${link/gnueabihf/"gnu"}"
+    ln -s "$i" "$link"
+  done
 }
 

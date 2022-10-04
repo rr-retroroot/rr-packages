@@ -1,0 +1,36 @@
+# Maintainer: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=mkbootimg
+pkgver=1
+pkgrel=1
+pkgdesc="mkbootimg for android boot image handling (x86_64, armv7h, aarch64)"
+arch=('any')
+url='https://github.com/osm0sis/mkbootimg'
+license=('apache 2')
+source=("https://github.com/osm0sis/mkbootimg/archive/d4a2677828fe9b60117af8996dcf1dea85d6b431.zip")
+sha256sums=('SKIP')
+options=(!strip !docs !libtool emptydirs)
+groups=('rr-toolchain')
+
+# a retroroot package should not depends on anything as required libraries
+# are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
+# the package should build and link a static library here.
+#depends=()
+makedepends=('rr-configure')
+
+build() {
+  cd $srcdir/$pkgname-d4a2677828fe9b60117af8996dcf1dea85d6b431
+  
+  source /opt/retroroot/rr-env ${CARCH}
+	make $MAKEFLAGS
+}
+
+package() {
+  cd $srcdir/$pkgname-d4a2677828fe9b60117af8996dcf1dea85d6b431
+	
+	source /opt/retroroot/rr-env ${CARCH}
+	
+	install -d "$pkgdir"/${RETROROOT_HOST}/bin
+	make PREFIX="$pkgdir${RETROROOT_HOST}" install
+}
+

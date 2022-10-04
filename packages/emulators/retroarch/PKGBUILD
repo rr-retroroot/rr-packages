@@ -4,7 +4,7 @@ pkgname=rr-retroarch
 pkgver=1.10.3.r248.af7db7c08f
 pkgrel=1
 pkgdesc='Reference frontend for the libretro API'
-arch=('x86_64' 'aarch64')
+arch=('x86_64' 'armv7h' 'aarch64')
 url='http://www.libretro.com/'
 license=('GPL')
 
@@ -55,10 +55,8 @@ build() {
   
   source /opt/retroroot/rr-env ${CARCH}
 
-  ./configure --prefix=${RETROROOT_PREFIX} \
+  rr-configure ${CARCH} \
     --sysconfdir=${RETROROOT_PREFIX}/etc \
-    --host=${CARCH}-linux-gnu \
-    --build=${CARCH}-linux-gnu \
     --disable-x11 \
     --disable-wayland \
     --disable-videocore \

@@ -32,28 +32,28 @@ function die() {
 function pacman_sync() {
   echo -e "${COL_G}pacman_sync:${COL_N} synching repositories..."
   sudo pacbrew-pacman --config pacman.conf -Syy &> /dev/null || die "pacman_sync: repo sync failed"
-  sudo pacbrew-pacman --config pacman.conf -S --noconfirm --needed rr-toolchain || die "pacman_sync: rr-toolchain installation failed"
+  #sudo pacbrew-pacman --config pacman.conf -S --noconfirm --needed rr-toolchain || die "pacman_sync: rr-toolchain installation failed"
   echo -e "${COL_G}pacman_sync:${COL_N} ok"
 }
 
 function download_repos() {
-  echo -e "${COL_G}build_packages:${COL_N} downloading retroroot repos..."
+  echo -e "${COL_G}download_repos:${COL_N} downloading retroroot repos..."
   rm -rf rr-repo-x86_64 && mkdir -p rr-repo-x86_64
   rm -rf rr-repo-armv7h && mkdir -p rr-repo-armv7h
   rm -rf rr-repo-aarch64 && mkdir -p rr-repo-aarch64
   rm -rf rr-repo-toolchain && mkdir -p rr-repo-toolchain
-  #scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/x86_64/apps/retroroot-*.*" rr-repo-x86_64 || die "build_packages: repo download error"
-  #scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/armv7h/apps/retroroot-*.*" rr-repo-armv7h || die "build_packages: repo download error"
-  #scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/aarch64/apps/retroroot-*.*" rr-repo-aarch64 || die "build_packages: repo download error"
-  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/toolchain/retroroot-*.*" rr-repo-toolchain || die "build_packages: repo download error"
+  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/x86_64/retroroot-*.*" rr-repo-x86_64 || die "download_repos: repo download error"
+  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/armv7h/retroroot-*.*" rr-repo-armv7h || die "download_repos: repo download error"
+  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/aarch64/retroroot-*.*" rr-repo-aarch64 || die "download_repos: repo download error"
+  scp "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/toolchain/retroroot-*.*" rr-repo-toolchain || die "download_repos: repo download error"
 }
 
 function upload_repos() {
-  echo -e "${COL_G}build_packages:${COL_N} uploading retroroot repos..."
-  #scp rr-repo-x86_64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/x86_64/apps/" || die "build_packages: repo upload error"
-  #scp rr-repo-armv7h/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/armv7h/apps/" || die "build_packages: repo upload error"
-  #scp rr-repo-aarch64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/aarch64/apps/" || die "build_packages: repo upload error"
-  scp rr-repo-toolchain/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/toolchain/" || die "build_packages: repo upload error"
+  echo -e "${COL_G}upload_repos:${COL_N} uploading retroroot repos..."
+  scp rr-repo-x86_64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/x86_64/" || die "upload_repos: repo upload error"
+  scp rr-repo-armv7h/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/armv7h/" || die "upload_repos: repo upload error"
+  scp rr-repo-aarch64/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/aarch64/" || die "upload_repos: repo upload error"
+  scp rr-repo-toolchain/* "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/toolchain/" || die "upload_repos: repo upload error"
 }
 
 # upload_pkg PKGNAME PKGPATH ARCH
@@ -62,7 +62,7 @@ function upload_app_pkg() {
   local pkgpath=$2
   local pkgarch=$3
   echo -e "${COL_G}upload_app_pkg:${COL_N} uploading ${COL_G}$pkgname${COL_N} ($pkgarch) to retroroot repos"
-  scp "$pkgpath/"*-$pkgarch.pkg.tar.xz "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/$pkgarch/apps" || die "upload_app_pkg: scp to $RR_SSH_HOST failed"
+  scp "$pkgpath/"*-$pkgarch.pkg.tar.xz "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/packages/$pkgarch" || die "upload_app_pkg: scp to $RR_SSH_HOST failed"
   pacbrew-repo-add "rr-repo-$pkgarch/retroroot-$pkgarch.db.tar.gz" "$pkgpath/"*-$pkgarch.pkg.tar.xz || die "upload_app_pkg: repo-add failed"
 }
 
@@ -73,6 +73,24 @@ function upload_toolchain_pkg() {
   echo -e "${COL_G}upload_toolchain_pkg:${COL_N} uploading ${COL_G}$pkgname${COL_N} to retroroot repos"
   scp "$pkgpath/"*.pkg.tar.xz "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/toolchain" || die "upload_toolchain_pkg: scp to $RR_SSH_HOST failed"
   pacbrew-repo-add "rr-repo-toolchain/retroroot-toolchain.db.tar.gz" "$pkgpath/"*.pkg.tar.xz || die "upload_toolchain_pkg: repo-add failed"
+}
+
+# is_toolchain_pkg PKGBUILD
+function is_toolchain_pkg() {
+  local groups=`cat "$1" | grep "groups=" | sed -n "s/^.*(\(.*\)).*$/\1/ p"`
+  if [[ "$groups" == *"rr-toolchain"* ]]; then
+    # 0 = true
+    return 0 
+  else
+    # 1 = false
+    return 1
+  fi
+}
+
+# get_local_pkg_arch PKGBUILD
+function get_local_pkg_arch() {
+  local arch=`cat "$1" | grep "arch=" | sed -n "s/^.*(\(.*\)).*$/\1/ p"`
+  echo "$arch"
 }
 
 # get_local_pkg_version PKGBUILD
@@ -98,34 +116,44 @@ function build_package() {
   rm -rf *.pkg.tar.* &> /dev/null
   # -d: we don't want to install deps ("cross-compilation")
   CARCH=$2 pacbrew-makepkg -C -f -d || die "build_package: makepkg failed"
+  if [ $3 ]; then
+    echo -e "${COL_G}build_package:${COL_N} installing ${COL_G}$pkgname${COL_N} ($local_pkgver)..."
+    sudo pacbrew-pacman --noconfirm -U *.pkg.tar.* || die "build_package: pkg installation failed"
+  fi
   popd &> /dev/null || die "build_package: popd failed"
 }
 
-function build_packages() {
+function rr_build() {
   # sync pacman packages
   pacman_sync
   
   # get remote package list
-  RR_REMOTE_PACKAGES=$(pacbrew-pacman -Sl)
-  RR_BUILD_PATH="*"
+  RR_REMOTE_PACKAGES=$(pacbrew-pacman --config pacman.conf -Sl)
+  RR_BUILD_PATH="."
 
   # parse args
   while test $# -gt 0
   do
     case "$1" in
-      -f) echo -e "${COL_G}build_packages${COL_N}: force rebuild all packages"
+      -a) shift && RR_BUILD_ARCH="$1"
+          echo -e "${COL_G}rr_build${COL_N}: forced arch (${COL_Y}$RR_BUILD_ARCH${COL_N})"
+        ;;
+      -f) echo -e "${COL_G}rr_build${COL_N}: force rebuild all packages enabled"
           RR_BUILD_ALL=true
         ;;
-      -h) echo -e "${COL_G}build_packages${COL_N}: uploading packages to retroroot repos with specified host"
-          RR_UPLOAD=true
+      -h) RR_UPLOAD=true
           shift && RR_SSH_HOST="$1"
+          echo -e "${COL_G}rr_build${COL_N}: uploading packages to retroroot repos with specified host ($RR_SSH_HOST)"
+        ;;
+      -i) echo -e "${COL_G}rr_build${COL_N}: install built packages"
+          RR_INSTALL=true
         ;;
       -p) shift && RR_BUILD_PATH="$1/"
-          echo -e "${COL_G}build_packages${COL_N}: building packages in specified path: ${RR_BUILD_PATH}"
+          echo -e "${COL_G}rr_build${COL_N}: building packages in specified path: ${RR_BUILD_PATH}"
         ;;
-      -u) echo -e "${COL_G}build_packages${COL_N}: uploading packages to retroroot repos with specified user"
-          RR_UPLOAD=true
+      -u) RR_UPLOAD=true
           shift && RR_SSH_USER="$1"
+          echo -e "${COL_G}rr_build${COL_N}: uploading packages to retroroot repos with specified user ($RR_SSH_USER)"
         ;;
     esac
     shift
@@ -136,55 +164,61 @@ function build_packages() {
     download_repos
   fi
 
-  # loop through packages 
-  shopt -s globstar
-  for pkg in ${RR_BUILD_PATH}*/PKGBUILD; do
+  # loop through packages, ignore "pkg" and "src"
+  pkgs=$(find "${RR_BUILD_PATH}" \( -path "*/pkg" -o -path "*/src" \) -prune -o -name PKGBUILD -print)
+  for pkg in $pkgs; do
     # get pkgbuild basename
     local pkgpath=$(dirname "$pkg")
-    
-    # are we building a toolchain package ?
-    local is_toolchain_pkg=false
-    if [ $(echo "$pkgpath" | cut -d "/" -f1) != "packages" ]; then
-      is_toolchain_pkg=true
-    fi
-
     # get local package name and version
     local pkgname=$(cat "$pkg" | grep "pkgname=" | sed 's/pkgname=//g')
     local local_pkgver=$(get_local_pkg_ver "$pkg")
-    
-    # set paths
-    if [ $is_toolchain_pkg = true ]; then
-      local remote_pkgver=$(get_remote_pkg_ver "toolchain" "$pkgname")
-    else
-      local remote_pkgver=$(get_remote_pkg_ver "x86_64" "$pkgname")
-    fi
+    #echo "pkg: $pkg, path: $pkgpath"
 
-    # build packages if force requested (-f) or local/remote pkg versions differ
-    if [ $RR_BUILD_ALL ] || [ "$local_pkgver" != "$remote_pkgver" ]; then
-      echo -e "${COL_G}build_packages:${COL_N} new package: ${COL_G}$pkgname${COL_N} ($remote_pkgver => $local_pkgver)"
-      if [ $is_toolchain_pkg = true ]; then
-        # build a "host" "toolchain" package
-        echo -e "${COL_G}build_packages:${COL_N} building ${COL_G}$pkgname${COL_N} ($local_pkgver)"
-        build_package "$pkgpath"
+    # build a "host" "toolchain" package
+    if is_toolchain_pkg "$pkg"; then
+      local remote_pkgver=$(get_remote_pkg_ver "toolchain" "$pkgname")
+      # only build packages if force requested (-f) or local/remote pkg versions differ
+      if [ $RR_BUILD_ALL ] || [ "$local_pkgver" != "$remote_pkgver" ]; then
+        echo -e "${COL_G}rr_build:${COL_N} new package: ${COL_G}$pkgname${COL_N} (${COL_Y}x86_64${COL_N}) ($remote_pkgver => $local_pkgver)"
+        echo -e "${COL_G}rr_build:${COL_N} building ${COL_G}$pkgname${COL_N} (${COL_Y}x86_64${COL_N}) ($local_pkgver)"
+        build_package "$pkgpath" "x86_64" $RR_INSTALL
         if [ $RR_UPLOAD ]; then
           upload_toolchain_pkg "$pkgname" "$pkgpath"
         fi
       else
-        # build a "target" "app" package
-        #ARCHS="x86_64 armv7h aarch64"
-        ARCHS=""
-        for ARCH in ${ARCHS}; do
-          echo -e "${COL_G}build_packages:${COL_N} building ${COL_G}$pkgname${COL_N} ($local_pkgver) (${COL_Y}${ARCH}${COL_N})"
-          build_package "$pkgpath" "${ARCH}"
+        # package is up to date
+        echo -e "${COL_G}rr_build: $pkgname${COL_N} (${COL_Y}x86_64${COL_N}) is up to date ($remote_pkgver => $local_pkgver)..."
+      fi
+    else
+      # build a "target" package
+      if [ -z ${RR_BUILD_ARCH+x} ]; then
+        ARCHS="x86_64 armv7h aarch64"
+      else
+        ARCHS="$RR_BUILD_ARCH"
+      fi
+      for ARCH in ${ARCHS}; do
+        # skip package if it's not for current arch
+        local pkgarch=$(get_local_pkg_arch "$pkg")
+        if [[ "$pkgarch" != *"$ARCH"* ]] && [[ "$pkgarch" != *"any"* ]]; then
+          echo -e "${COL_G}rr_build:${COL_N} ${COL_G}$pkgname${COL_N} (${COL_Y}${ARCH}${COL_N}) was skipped (package arch: ${COL_Y}$pkgarch${COL_N})"
+          continue
+        fi
+        
+        # only build packages if force requested (-f) or local/remote pkg versions differ
+        local remote_pkgver=$(get_remote_pkg_ver "${ARCH}" "$pkgname")
+        if [ $RR_BUILD_ALL ] || [ "$local_pkgver" != "$remote_pkgver" ]; then
+          echo -e "${COL_G}rr_build:${COL_N} new package: ${COL_G}$pkgname${COL_N} (${COL_Y}${ARCH}${COL_N}) ($remote_pkgver => $local_pkgver)"
+          echo -e "${COL_G}rr_build:${COL_N} building ${COL_G}$pkgname${COL_N} (${COL_Y}${ARCH}${COL_N}) ($local_pkgver)"
+          build_package "$pkgpath" "${ARCH}" $RR_INSTALL
           if [ $RR_UPLOAD ]; then
             upload_app_pkg "$pkgname" "$pkgpath" "${ARCH}"
           fi
-        done
-        echo -e "${COL_G}build_packages:${COL_N} build sucess for ${COL_G}$pkgpath/$pkgname-$local_pkgver.pkg.tar.xz${COL_N}"
-      fi
-    else
-      # package is up to date
-      echo -e "${COL_G}build_packages: $pkgname${COL_N} is up to date ($remote_pkgver => $local_pkgver)..."
+          echo -e "${COL_G}rr_build:${COL_N} build sucess for ${COL_G}$pkgpath/$pkgname-$local_pkgver.pkg.tar.xz${COL_N}"
+        else
+          # package is up to date
+          echo -e "${COL_G}rr_build: $pkgname${COL_N} (${COL_Y}${ARCH}${COL_N}) is up to date ($remote_pkgver => $local_pkgver)..."
+        fi
+      done
     fi
   done
 
@@ -193,8 +227,8 @@ function build_packages() {
     upload_repos
   fi
 
-  echo -e "${COL_G}build_packages:${COL_N} all done !"
+  echo -e "${COL_G}rr_build:${COL_N} all done !"
 }
 
-build_packages "$@"
+rr_build "$@"
 

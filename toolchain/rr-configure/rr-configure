@@ -7,12 +7,7 @@ source /opt/retroroot/rr-env $target
 
 ./configure \
   --host=$target-linux-gnu \
-  --target=$target-linux-gnu \
-  --build=${CHOST} \
+  --build=$target-linux-gnu \
   --prefix=${RETROROOT_PREFIX} \
-  --libdir=${RETROROOT_PREFIX_LIB} \
-  --includedir=${RETROROOT_PREFIX_INCLUDE} \
-  --disable-shared \
-  --enable-static \
   "$@"
 

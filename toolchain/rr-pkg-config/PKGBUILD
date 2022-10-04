@@ -2,7 +2,7 @@
 
 pkgname=rr-pkg-config
 pkgver=1
-pkgrel=2
+pkgrel=4
 pkgdesc='retroroot pkg-config support script'
 arch=('any')
 url='https://github.com/rr-retroroot/rr-packages'

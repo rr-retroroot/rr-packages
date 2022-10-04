@@ -4,7 +4,7 @@ pkgname=rr-rawgl
 pkgver=1eeaa53
 pkgrel=1
 pkgdesc='rawgl is a re-implementation of the engine used in the game Another World.'
-arch=('x86_64' 'aarch64')
+arch=('x86_64' 'armv7h' 'aarch64')
 url="https://github.com/cyxx/rawgl"
 license=('GPL3')
 

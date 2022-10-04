@@ -2,7 +2,7 @@
 
 pkgname=rr-cmake
 pkgver=1
-pkgrel=3
+pkgrel=6
 arch=(any)
 pkgdesc="retroroot cmake wrapper"
 depends=('rr-environment' 'rr-pkg-config' 'rr-sysroot')
@@ -16,12 +16,15 @@ _architectures="x86_64 armv7h aarch64"
 
 build() {
   for _arch in ${_architectures}; do
-    sed "s|@TRIPLE@|${_arch}|g" toolchain.cmake > ${_arch}-toolchain.cmake
     sed "s|@TRIPLE@|${_arch}|g" retroroot-cmake > ${_arch}-retroroot-cmake
+    sed "s|@TRIPLE@|${_arch}|g" toolchain.cmake > ${_arch}-toolchain.cmake
+    sed -i "s|@PROC@|${_arch}|g" ${_arch}-toolchain.cmake
+    sed -i "s|@TARGET@|${_arch}-linux-gnu|g" ${_arch}-toolchain.cmake
   done
 }
 
 package() {
+  _architectures="x86_64 armv7h aarch64"
   for _arch in ${_architectures}; do
     install -d ${pkgdir}/opt/retroroot/target/${_arch}/usr/bin
     install -d ${pkgdir}/opt/retroroot/target/${_arch}/usr/lib/cmake
