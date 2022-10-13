@@ -1,14 +1,15 @@
 #!/usr/bin/ash
 
 create_data_partition() {
-  DEVICE=$(blkid | grep RR-BOOT | cut -d ":" -f1) || launch_interactive_shell
-  DEVICE=${DEVICE::-2}
-  echo "Creating data partition on ${DEVICE}, please wait..."
-  parted ${DEVICE} -- \
+  ROOT_PARTITION=`basename $(blkid -L "RR-BOOT")` || launch_interactive_shell
+  ROOT_DEVICE=`basename $(readlink -f "/sys/class/block/$ROOT_PARTITION/..")` || launch_interactive_shell
+  DATA_PARTITION="${ROOT_PARTITION%?}2"
+  echo "Creating data partition \"${DATA_PARTITION}\" on \"${ROOT_DEVICE}\", please wait..."
+  parted ${ROOT_DEVICE} -- \
     mkpart primary ext2 1024 -1s \
     unit B
   partprobe
-  mke2fs -t ext4 -L "RR-DATA" ${DEVICE}p2 || launch_interactive_shell
+  mke2fs -t ext4 -L "RR-DATA" ${DATA_PARTITION} || launch_interactive_shell
 }
 
 run_latehook() {
