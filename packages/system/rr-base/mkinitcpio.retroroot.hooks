@@ -1,9 +1,9 @@
 #!/usr/bin/ash
 
 create_data_partition() {
-  ROOT_PARTITION=`basename $(blkid -L "RR-BOOT")` || launch_interactive_shell
-  ROOT_DEVICE=`basename $(readlink -f "/sys/class/block/$ROOT_PARTITION/..")` || launch_interactive_shell
-  DATA_PARTITION="${ROOT_PARTITION%?}2"
+  ROOT_PARTITION="`basename $(blkid -L "RR-BOOT")`" || launch_interactive_shell
+  ROOT_DEVICE="/dev/`basename $(readlink -f "/sys/class/block/$ROOT_PARTITION/..")`" || launch_interactive_shell
+  DATA_PARTITION="/dev/${ROOT_PARTITION%?}2"
   echo "Creating data partition \"${DATA_PARTITION}\" on \"${ROOT_DEVICE}\", please wait..."
   parted ${ROOT_DEVICE} -- \
     mkpart primary ext2 1024 -1s \
