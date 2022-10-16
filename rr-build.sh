@@ -115,7 +115,7 @@ function build_package() {
   pushd "$1" &> /dev/null || die "build_package: pushd $1 failed"
   rm -rf *.pkg.tar.* &> /dev/null
   # -d: we don't want to install deps ("cross-compilation")
-  CARCH=$2 pacbrew-makepkg -C -f -d || die "build_package: makepkg failed"
+  CARCH=$2 pacbrew-makepkg -Cfd || die "build_package: makepkg failed"
   if [ $3 ]; then
     echo -e "${COL_G}build_package:${COL_N} installing ${COL_G}$pkgname${COL_N} ($local_pkgver)..."
     sudo pacbrew-pacman --noconfirm -U *.pkg.tar.* || die "build_package: pkg installation failed"
@@ -200,7 +200,7 @@ function rr_build() {
         # skip package if it's not for current arch
         local pkgarch=$(get_local_pkg_arch "$pkg")
         if [[ "$pkgarch" != *"$ARCH"* ]] && [[ "$pkgarch" != *"any"* ]]; then
-          echo -e "${COL_G}rr_build:${COL_N} ${COL_G}$pkgname${COL_N} (${COL_Y}${ARCH}${COL_N}) was skipped (package arch: ${COL_Y}$pkgarch${COL_N})"
+          echo -e "${COL_G}rr_build:${COL_N} ${COL_G}$pkgname${COL_N} (${COL_Y}${ARCH}${COL_N}) was skipped (pkg arch: ${COL_Y}$pkgarch${COL_N})"
           continue
         fi
         

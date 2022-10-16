@@ -1,0 +1,66 @@
+# Maintainer: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=linux-rg353
+pkgver=4.19.172
+pkgrel=3
+pkgdesc="RetroRoot rg353 kernel"
+arch=('aarch64')
+license=('GPL')
+commit=16fd167e792f05f6cc36f6e864ea632c4c8922ee
+url="https://github.com/rr-retroroot/rk356x-kernel/archive/$commit.zip"
+
+# every retroroot pkg must be a member of "rr-game", "rr-emulator", "rr-app" or "rr-system" group
+groups=('rr-system')
+
+depends=('coreutils' 'mkinitcpio>=0.7')
+makedepends=('rr-environment' 'rr-toolchain-aarch64')
+
+source=("$url" "config-rg353" "extlinux.conf")
+sha512sums=('SKIP' 'SKIP' 'SKIP')
+
+prepare() {
+  _builddir="$srcdir/rk356x-kernel-$commit"
+  cd "$_builddir"
+
+  # remove "-Werror" from all makefiles 
+  echo "removing \"-Werror\" flags from all makefiles"
+  makefiles="
+    $(find "$_builddir" -type f -name Makefile)
+    $(find "$_builddir" -type f -name Makefile.*)
+    $(find "$_builddir" -type f -name Kbuild.*)
+    $(find "$_builddir" -type f -name *.mak)"
+  for i in $makefiles; do
+    sed -i 's/-Werror-/-W/g' "$i"
+    sed -i 's/-Werror=/-W/g' "$i"
+    sed -i 's/-Werror//g' "$i"
+    sed -i 's/-Wall/-Wno-stringop-overread/g' "$i"
+  done
+  
+  cp "$srcdir/config-rg353" .config
+  make ARCH="arm64" oldconfig
+}
+
+build() {
+  _builddir="$srcdir/rk356x-kernel-$commit"
+  cd "$_builddir"
+  
+  source /opt/retroroot/rr-env ${CARCH}
+  yes "" | make V=1 $MAKEFLAGS ARCH="arm64" CROSS_COMPILE=${RETROROOT_CROSS_PREFIX} \
+    KBUILD_BUILD_VERSION="$((pkgrel + 0))-retroroot" \
+    Image modules rockchip/rk3566-rg353p-linux.dtb rockchip/rk3566-rg353v-linux.dtb
+}
+
+package() {
+  _builddir="$srcdir/rk356x-kernel-$commit"
+  cd $_builddir
+  
+  # install kernel image and dtb
+  install -d "$pkgdir/boot"
+  cp arch/arm64/boot/Image "$pkgdir/boot/linux"
+  cp arch/arm64/boot/dts/rockchip/rk3566-rg353*-linux.dtb "$pkgdir/boot"
+  
+  # TODO: install kernel headers
+  
+  install -d "$pkgdir/boot/extlinux"
+  cp "$srcdir/extlinux.conf" "$pkgdir/boot/extlinux/extlinux.conf"
+}
