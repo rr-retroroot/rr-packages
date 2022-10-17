@@ -2,7 +2,7 @@
 
 pkgname=rr-recovery
 pkgver=1
-pkgrel=1
+pkgrel=4
 pkgdesc="RetroRoot Recovery"
 arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL')
@@ -33,7 +33,7 @@ build() {
   retroroot-cmake \
     -Bbuild \
     -DCMAKE_INSTALL_PREFIX=${RETROROOT_PREFIX} \
-    -DPLATFORM_LINUX=ON
+    -DPLATFORM_LINUX=ON -DOPTION_SDL2=ON -DOPTION_RENDER_GLES2=ON
 
   make $MAKEFLAGS -C build
 }

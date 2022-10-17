@@ -25,7 +25,7 @@ export RETROROOT_AS=${RETROROOT_CROSS_PREFIX}as
 export RETROROOT_NM=${RETROROOT_CROSS_PREFIX}nm
 export RETROROOT_RANLIB=${RETROROOT_CROSS_PREFIX}ranlib
 export RETROROOT_STRIP=${RETROROOT_CROSS_PREFIX}strip
-export RETROROOT_PKGCONFIG=${RETROROOT_CROSS_PREFIX}pkg-config-
+export RETROROOT_PKGCONFIG=${RETROROOT_CROSS_PREFIX}pkg-config
 
 export AS="${RETROROOT_AS} --sysroot=${RETROROOT_SYSROOT}"
 export CC="${RETROROOT_CC} --sysroot=${RETROROOT_SYSROOT}"
@@ -50,9 +50,9 @@ elif [ ${_arch} == "armv7h" ]; then
   export CPPFLAGS="${CPPFLAGS} -march=armv7-a -mfloat-abi=hard -mfpu=neon"
   export CXXFLAGS="${CXXFLAGS} -march=armv7-a -mfloat-abi=hard -mfpu=neon"
 elif [ ${_arch} == "aarch64" ]; then
-  export CFLAGS="${CFLAGS} -march=armv8-a"
-  export CPPFLAGS="${CPPFLAGS} -march=armv8-a"
-  export CXXFLAGS="${CXXFLAGS} -march=armv8-a"
+  export CFLAGS="${CFLAGS} -march=armv8-a -mcpu=cortex-a35"
+  export CPPFLAGS="${CPPFLAGS} -march=armv8-a -mcpu=cortex-a35"
+  export CXXFLAGS="${CXXFLAGS} -march=armv8-a -mcpu=cortex-a35"
 fi
 
 # pkg config setup

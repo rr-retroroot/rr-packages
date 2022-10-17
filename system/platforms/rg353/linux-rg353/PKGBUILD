@@ -2,7 +2,7 @@
 
 pkgname=linux-rg353
 pkgver=4.19.172
-pkgrel=3
+pkgrel=4
 pkgdesc="RetroRoot rg353 kernel"
 arch=('aarch64')
 license=('GPL')
@@ -10,7 +10,7 @@ commit=16fd167e792f05f6cc36f6e864ea632c4c8922ee
 url="https://github.com/rr-retroroot/rk356x-kernel/archive/$commit.zip"
 
 # every retroroot pkg must be a member of "rr-game", "rr-emulator", "rr-app" or "rr-system" group
-groups=('rr-system')
+groups=('rr-system' 'rr-rg353')
 
 depends=('coreutils' 'mkinitcpio>=0.7')
 makedepends=('rr-environment' 'rr-toolchain-aarch64')
