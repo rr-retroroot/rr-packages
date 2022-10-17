@@ -1,11 +1,11 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
 pkgname=rr-retroarch
-pkgver=1.10.3.r248.af7db7c08f
-pkgrel=1
+pkgver=1.12.0
+pkgrel=2
 pkgdesc='Reference frontend for the libretro API'
 arch=('x86_64' 'armv7h' 'aarch64')
-url='http://www.libretro.com/'
+url='https://github.com/libretro/RetroArch'
 license=('GPL')
 
 # every retroroot pkg must be a member of "rr-game", "rr-emulator", "rr-app" or "rr-system" group
@@ -16,44 +16,54 @@ groups=('rr-emulator')
 # the package should build and link a static library here.
 #depends=()
 
-retroarch_commit=af7db7c08ff531e57488a65aa62352b262e96387
-assets_commit=1daf54ede25763c3ae196303d9dc27610a2338a7
-core_info_commit=fdaa9195bb8c0d45db943dff1ed7d0b6763a6701
+provides=('retroarch' 'retroarch-assets-glui' 'retroarch-assets-ozone' 'retroarch-assets-xmb' 'libretro-core-info')
+conflicts=('retroarch' 'retroarch-assets-glui' 'retroarch-assets-ozone' 'retroarch-assets-xmb' 'libretro-core-info')
+
+assets_commit=ee33f8ef693b42a8e23ca3fd48f43f345e7cd087
+core_info_commit=cbf7be9d90c407abbe7d3406a8aa5ed1d23a71d8
+joypad_autoconfig_ver=1.11.0
 source=(
   # retroarch
-  "git+https://github.com/libretro/RetroArch.git#commit=${retroarch_commit}"
+  "$url/archive/refs/tags/v$pkgver.tar.gz"
   "retroarch-config.patch"
   # retroarch assets
   "git+https://github.com/libretro/retroarch-assets.git#commit=${assets_commit}"
   # retroarch core info
   "git+https://github.com/libretro/libretro-core-info.git#commit=${core_info_commit}"
+  # retroarch-joypad-autoconfig
+  "https://github.com/libretro/retroarch-joypad-autoconfig/archive/refs/tags/v$joypad_autoconfig_ver.tar.gz"
+  # retroarch "retrogame_joypad" autoconfig (rg353)
+  'retrogame_joypad.cfg'
   # icon: 128x128, preview: 512x512
   'rr-run' 'rr-icon.png' 'rr-preview.png'
 )
 sha256sums=(
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP' 'SKIP' 'SKIP'
+  'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP'
 )
 
-pkgver() {
-  cd RetroArch
-  printf "%s" "$(git describe --first-parent --long --tags | sed 's/v//g;s/\([^-]*-\)g/r\1/;s/-/./g')"
-}
-
 prepare() {
-  cd RetroArch
+  cd RetroArch-$pkgver
   patch -Np1 -i ../retroarch-config.patch
 }
 
 build() {
   { echo; echo "Building $pkgname-$pkgver (${CARCH})"; echo; }
 
-  cd RetroArch
+  cd RetroArch-$pkgver
   
   source /opt/retroroot/rr-env ${CARCH}
+
+  case "$CARCH" in
+    aarch64)
+      ARCH_OPT="--disable-opengl --enable-opengles --enable-opengles3 --enable-opengles3_2"
+      ;;
+    armv7a)
+      ARCH_OPT="--disable-opengl --enable-opengles --enable-opengles3 --enable-opengles3_2"
+      ;;
+    x86_64)
+      ARCH_OPT="--enable-opengl"
+      ;;
+  esac
 
   rr-configure ${CARCH} \
     --sysconfdir=${RETROROOT_PREFIX}/etc \
@@ -66,9 +76,10 @@ build() {
     --disable-builtinzlib \
     --disable-cg \
     --enable-kms \
-    --enable-dbus
+    --enable-dbus \
+    ${ARCH_OPT}
   make $MAKEFLAGS
-  
+
   # TODO
   #make $MAKEFLAGS -C libretro-common/audio/dsp_filters
   #make $MAKEFLAGS -C gfx/video_filters
@@ -76,20 +87,27 @@ build() {
 
 package() {
   # package retroarch
-  cd RetroArch
+  cd RetroArch-$pkgver
   make DESTDIR="${pkgdir}" install
-  
+
+  source /opt/retroroot/rr-env ${CARCH}
+
   # package assets
   cd "$srcdir"/retroarch-assets
-  source /opt/retroroot/rr-env ${CARCH}
   install -dm 755 "${pkgdir}"${RETROROOT_PREFIX_SHARE}/retroarch/assets
   cp -dr --no-preserve=ownership glui "${pkgdir}"${RETROROOT_PREFIX_SHARE}/retroarch/assets/
   cp -dr --no-preserve=ownership ozone "${pkgdir}"${RETROROOT_PREFIX_SHARE}/retroarch/assets/
   cp -dr --no-preserve=ownership xmb "${pkgdir}"${RETROROOT_PREFIX_SHARE}/retroarch/assets/
-  
+
   # package core info
   cd $srcdir/libretro-core-info
-  make DESTDIR="${pkgdir}" install
+  make DESTDIR="$pkgdir" install
+
+  # retroarch-joypad-autoconfig
+  make -C "$srcdir"/retroarch-joypad-autoconfig-$joypad_autoconfig_ver DESTDIR="$pkgdir" install
+  # install "retrogame_joypad.cfg" autoconfig ((rg353)
+  install -dm 755 "$pkgdir"${RETROROOT_PREFIX_SHARE}/libretro/autoconfig/udev
+  install -m644 "$srcdir"/retrogame_joypad.cfg "$pkgdir"${RETROROOT_PREFIX_SHARE}/libretro/autoconfig/udev
 
   # retroroot packages data needs to be installed in "/home/rr/apps/${pkgname}"
   install -d "$pkgdir/home/rr/apps/$pkgname"
