@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "rr-mass-storage: sharing ${DATA}"
+
+modprobe g_mass_storage file=/dev/mmcblk1p3 removable=1 stall=1 iSerialNumber=7ABC7ABC7ABC7ABC7ABC7ABC
+

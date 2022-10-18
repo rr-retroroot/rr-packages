@@ -2,7 +2,7 @@
 
 pkgname=linux-rg353
 pkgver=4.19.172
-pkgrel=7
+pkgrel=8
 pkgdesc="RetroRoot rg353 kernel"
 arch=('aarch64')
 license=('GPL')
