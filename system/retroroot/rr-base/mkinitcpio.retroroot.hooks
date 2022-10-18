@@ -23,8 +23,7 @@ run_latehook() {
   # check if data partition needs to be created
   if [ "${recovery}" != "1" ]; then
     # not in recovery, show splash screen
-    # TODO: fix this on rg353
-    # rr-splash "/dev/fb0" "/logo.png" &
+    rr-splash /dev/fb0 /logo.png &
     # now create data partition if needed
     blkid | grep "RR-DATA"
     if [ $? -ne 0 ]; then

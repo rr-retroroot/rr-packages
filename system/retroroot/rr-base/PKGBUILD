@@ -2,7 +2,7 @@
 
 pkgname=rr-base
 pkgver=1
-pkgrel=7
+pkgrel=12
 pkgdesc="RetroRoot base system"
 arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL')
@@ -13,7 +13,8 @@ groups=('rr-system')
 # a retroroot package should not depends on anything as required libraries
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
 # the package should build and link a static library here.
-#depends=()
+# "system" packages are specials...
+depends=('rr-splash')
 
 source=(
   'rr-exec'
@@ -22,8 +23,9 @@ source=(
   'mkinitcpio.conf'
   'mkinitcpio.retroroot.hooks'
   'mkinitcpio.retroroot.install'
+  '90-rr-base.hook'
 )
-sha512sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha512sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 package() {
   cd "$srcdir"
@@ -36,4 +38,7 @@ package() {
   install -Dm644 mkinitcpio.conf -t "$pkgdir/etc/"
   install -Dm755 mkinitcpio.retroroot.hooks "$pkgdir/usr/lib/initcpio/hooks/retroroot"
   install -Dm755 mkinitcpio.retroroot.install "$pkgdir/usr/lib/initcpio/install/retroroot"
+
+  # install pacman hooks
+  install -Dm644 90-rr-base.hook "${pkgdir}/usr/share/libalpm/hooks/90-rr-base.hook"
 }

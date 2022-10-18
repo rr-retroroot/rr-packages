@@ -15,7 +15,7 @@ groups=('rr-system')
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
 # the package should build and link a static library here.
 # this package is a special case...
-depends=('rr-base')
+#depends=('')
 
 source=("git+$url.git")
 sha512sums=('SKIP')

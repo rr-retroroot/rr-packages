@@ -1,0 +1,12 @@
+[Trigger]
+Type = File
+Operation = Install
+Operation = Upgrade
+Target = usr/lib/initcpio/install/retroroot/*
+Target = usr/lib/initcpio/hooks/retroroot/*
+
+[Action]
+Description = Updating initcpios for retroroot hooks...
+When = PostTransaction
+Exec = /usr/bin/mkinitcpio -p linux
+
