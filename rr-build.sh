@@ -4,6 +4,7 @@ set -e
 
 RR_SSH_HOST="us.mydedibox.fr"
 RR_SSH_HOST_MIRROR="mydedibox.fr"
+RR_TEMP_DB="$(pwd)/.repo"
 
 COL_R='\033[0;31m'
 COL_G='\033[0;32m'
@@ -15,6 +16,7 @@ function cleanup {
   if [ $? -ne 0 ]; then
     echo "${COL_R}something went wrong...\n${COL_N}"
   fi
+  sudo rm -rf "${RR_TEMP_DB}"
 }
 
 # set exit trap
@@ -27,7 +29,7 @@ function die() {
 
 function pacman_sync() {
   echo -e "${COL_G}pacman_sync:${COL_N} synching repositories..."
-  sudo pacbrew-pacman --config pacman.conf -Syy &> /dev/null || die "pacman_sync: repo sync failed"
+  sudo pacbrew-pacman --config pacman.conf --dbpath ${RR_TEMP_DB} -Syy &> /dev/null || die "pacman_sync: repo sync failed"
   #sudo pacbrew-pacman --config pacman.conf -S --noconfirm --needed toolchain || die "pacman_sync: toolchain installation failed"
   echo -e "${COL_G}pacman_sync:${COL_N} ok"
 }
@@ -97,7 +99,6 @@ function get_remote_pkg_ver() {
   echo "$remote_pkgverrel"
 }
 
-
 # build_package PKGPATH ARCH INSTALL
 function build_package() {
   # build package
@@ -113,11 +114,14 @@ function build_package() {
 }
 
 function rr_build() {
+  # create temp repo
+  mkdir "${RR_TEMP_DB}"
+  
   # sync pacman packages
   pacman_sync
   
   # get remote package list
-  RR_REMOTE_PACKAGES=$(pacbrew-pacman --config pacman.conf -Sl)
+  RR_REMOTE_PACKAGES=$(pacbrew-pacman --config pacman.conf --dbpath "${RR_TEMP_DB}" -Sl)
   RR_BUILD_PATH="."
 
   # parse args

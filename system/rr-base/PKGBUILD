@@ -2,7 +2,7 @@
 
 pkgname=rr-base
 pkgver=1
-pkgrel=1
+pkgrel=2
 pkgdesc="RetroRoot base system"
 arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL')
@@ -41,4 +41,7 @@ package() {
 
   # install pacman hooks
   install -Dm644 90-rr-base.hook "${pkgdir}/usr/share/libalpm/hooks/90-rr-base.hook"
+  
+  # copy common rootfs overlays
+  cp -r "$srcdir"/../overlay/etc "${pkgdir}"
 }
