@@ -11,7 +11,9 @@ source=(
 'rr-meson' 'rr-meson-toolchain'
 )
 md5sums=('SKIP' 'SKIP')
-groups=('rr-toolchain')
+
+# every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
+groups=('retroroot' 'toolchain')
 
 package() {
   install -d ${pkgdir}/opt/retroroot

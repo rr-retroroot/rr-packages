@@ -1,6 +1,6 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
-pkgname=rr-wesnoth
+pkgname=wesnoth
 pkgver=1.16.3
 pkgrel=2
 pkgdesc="A turn-based strategy game on a fantasy world"
@@ -8,8 +8,8 @@ arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL')
 url="http://www.wesnoth.org/"
 
-# every retroroot pkg must be a member of "rr-game", "rr-emulator", "rr-app" or "rr-system" group
-groups=('rr-game')
+# every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
+groups=('retroroot' 'game')
 
 # a retroroot package should not depends on anything as required libraries
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,

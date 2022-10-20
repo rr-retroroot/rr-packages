@@ -15,7 +15,9 @@ source=(
 sha256sums=('SKIP' 'SKIP' 'SKIP')
 options=(!strip !docs !libtool emptydirs)
 depends=('rr-configure')
-groups=('rr-toolchain')
+
+# every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
+groups=('retroroot' 'toolchain')
 
 package() {
   mv ${srcdir}/opt ${pkgdir}

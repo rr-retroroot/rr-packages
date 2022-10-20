@@ -2,14 +2,16 @@
 
 pkgname=rr-pkg-config
 pkgver=1
-pkgrel=4
+pkgrel=1
 pkgdesc='retroroot pkg-config support script'
 arch=('any')
 url='https://github.com/rr-retroroot/rr-packages'
 license=('zlib')
 source=('pkg-config')
 md5sums=('SKIP')
-groups=('rr-toolchain')
+
+# every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
+groups=('retroroot' 'toolchain')
 
 _architectures="x86_64 armv7h aarch64"
 

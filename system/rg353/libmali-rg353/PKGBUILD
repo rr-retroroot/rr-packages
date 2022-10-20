@@ -2,14 +2,14 @@
 
 pkgname=libmali-rg353
 pkgver=1.9.0
-pkgrel=7
+pkgrel=1
 pkgdesc="Userspace interface to kernel DRM services (rg353)"
 arch=('aarch64')
 license=('custom')
 url="https://github.com/JustEnoughLinuxOS/libmali"
 
-# every retroroot pkg must be a member of "rr-game", "rr-emulator", "rr-app" or "rr-system" group
-groups=('rr-system' 'rr-rg353')
+# every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
+groups=('retroroot' 'system' 'rg353')
 
 depends=('libdrm')
 makedepends=('rr-environment' 'rr-toolchain-aarch64')

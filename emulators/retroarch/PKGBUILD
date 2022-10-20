@@ -1,6 +1,6 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
-pkgname=rr-retroarch
+pkgname=retroarch
 pkgver=1.12.0
 pkgrel=2
 pkgdesc='Reference frontend for the libretro API'
@@ -8,8 +8,8 @@ arch=('x86_64' 'armv7h' 'aarch64')
 url='https://github.com/libretro/RetroArch'
 license=('GPL')
 
-# every retroroot pkg must be a member of "rr-game", "rr-emulator", "rr-app" or "rr-system" group
-groups=('rr-emulator')
+# every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
+groups=('retroroot' 'emulator')
 
 # a retroroot package should not depends on anything as required libraries
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,

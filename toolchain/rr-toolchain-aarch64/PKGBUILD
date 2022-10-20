@@ -12,7 +12,9 @@ source=(
 )
 sha256sums=('SKIP')
 options=(!strip !docs !libtool emptydirs)
-groups=('rr-toolchain')
+
+# every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
+groups=('retroroot' 'toolchain')
 
 package() {
   install -d ${pkgdir}/opt/retroroot/host/aarch64

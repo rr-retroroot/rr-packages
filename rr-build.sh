@@ -28,7 +28,7 @@ function die() {
 function pacman_sync() {
   echo -e "${COL_G}pacman_sync:${COL_N} synching repositories..."
   sudo pacbrew-pacman --config pacman.conf -Syy &> /dev/null || die "pacman_sync: repo sync failed"
-  #sudo pacbrew-pacman --config pacman.conf -S --noconfirm --needed rr-toolchain || die "pacman_sync: rr-toolchain installation failed"
+  #sudo pacbrew-pacman --config pacman.conf -S --noconfirm --needed toolchain || die "pacman_sync: toolchain installation failed"
   echo -e "${COL_G}pacman_sync:${COL_N} ok"
 }
 
@@ -47,24 +47,25 @@ function upload_app_pkg() {
     || die "upload_app_pkg: repo-add failed"
 }
 
-# upload_pkg PKGPATH PKGNAME
+# upload_toolchain_pkg PKGPATH PKGNAME ARCH
 function upload_toolchain_pkg() {
   local pkgpath=$1
   local pkgname=$2
+  local pkgarch=$3
   local pkgfile=$(find $pkgpath/$pkgname-*-$pkgarch.pkg.tar.xz  -printf "%f\n")
   echo -e "${COL_G}upload_toolchain_pkg:${COL_N} uploading ${COL_G}$pkgname${COL_N} to retroroot repo"
   scp "$pkgpath/$pkgfile" "$RR_SSH_USER@$RR_SSH_HOST:/var/www/retroroot/toolchain" || die "upload_toolchain_pkg: scp to $RR_SSH_HOST failed"
-  echo -e "${COL_G}upload_app_pkg:${COL_N} adding ${COL_G}$pkgname${COL_N} ($pkgarch) to retroroot repo"
+  echo -e "${COL_G}upload_toolchain_pkg:${COL_N} adding ${COL_G}$pkgname${COL_N} ($pkgarch) to retroroot repo"
   ssh "$RR_SSH_USER@$RR_SSH_HOST" pacbrew-repo-add \
     /var/www/retroroot/toolchain/retroroot-toolchain.db.tar.gz \
     /var/www/retroroot/toolchain/$pkgfile \
-    || die "upload_app_pkg: repo-add failed"
+    || die "upload_toolchain_pkg: repo-add failed"
 }
 
 # is_toolchain_pkg PKGBUILD
 function is_toolchain_pkg() {
   local groups=`cat "$1" | grep "groups=" | sed -n "s/^.*(\(.*\)).*$/\1/ p"`
-  if [[ "$groups" == *"rr-toolchain"* ]]; then
+  if [[ "$groups" == *"toolchain"* ]]; then
     # 0 = true
     return 0 
   else
@@ -166,7 +167,7 @@ function rr_build() {
         echo -e "${COL_G}rr_build:${COL_N} building ${COL_G}$pkgname${COL_N} (${COL_Y}x86_64${COL_N}) ($local_pkgver)"
         build_package "$pkgpath" "x86_64" $RR_INSTALL
         if [ $RR_UPLOAD ]; then
-          upload_toolchain_pkg "$pkgpath" "$pkgname"
+          upload_toolchain_pkg "$pkgpath" "$pkgname" "any"
         fi
       else
         # package is up to date
