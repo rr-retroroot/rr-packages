@@ -7,7 +7,7 @@ pkgdesc="RetroRoot splash screen utility"
 arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL')
 
-commit=c016bc9696dd518c0796c0216bc192355b9c64fb
+commit=6239336c4685aaa13b038a13efd8807fd886cc15
 url='https://github.com/rr-retroroot/rr-splash'
 
 # every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
