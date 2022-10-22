@@ -1,9 +1,9 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
-pkgname=rr-base
+pkgname=rr-overlay
 pkgver=1
-pkgrel=3
-pkgdesc="RetroRoot base system"
+pkgrel=1
+pkgdesc="RetroRoot rootfs overlay"
 arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL')
 
@@ -14,19 +14,9 @@ groups=('retroroot' 'system')
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
 # the package should build and link a static library here.
 # "system" packages are specials...
-depends=('rr-initramfs-hook' 'rr-overlay')
-
-source=(
-  'rr-exec'
-  'rr-service'
-  'retroroot.service'
-)
-sha512sums=('SKIP' 'SKIP' 'SKIP')
+depends=('base')
 
 package() {
-  cd "$srcdir"
-
-  install -Dm755 rr-exec -t "$pkgdir/usr/bin/"
-  install -Dm755 rr-service -t "$pkgdir/usr/bin/"
-  install -Dm644 retroroot.service -t "$pkgdir/etc/systemd/system/"
+  # copy common rootfs overlays
+  cp -r "$startdir"/overlay/etc "${pkgdir}"
 }

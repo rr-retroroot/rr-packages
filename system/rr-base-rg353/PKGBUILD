@@ -8,18 +8,11 @@ arch=('aarch64')
 license=('GPL')
 
 # every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
-groups=('retroroot' 'system' 'rg353')
+groups=('retroroot' 'system')
 
 # a retroroot package should not depends on anything as required libraries
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
 # the package should build and link a static library here.
 # "system" packages are specials...
-depends=('rr-base')
-
-package() {
-  cd "$srcdir"
-  
-  # copy rg353 rootfs overlays
-  cp -r "$srcdir"/../overlay/. "${pkgdir}"
-}
+depends=('rr-base' 'rr-overlay-rg353')
 

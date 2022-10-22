@@ -4,9 +4,10 @@ Operation = Install
 Operation = Upgrade
 Target = usr/lib/initcpio/install/retroroot/*
 Target = usr/lib/initcpio/hooks/retroroot/*
+Target = usr/bin/rr-splash
 
 [Action]
-Description = Updating initcpios for retroroot hooks...
+Description = Updating initramfs with retroroot hooks...
 When = PostTransaction
 Exec = /usr/bin/mkinitcpio -p linux
 
