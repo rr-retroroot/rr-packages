@@ -2,8 +2,12 @@
 
 pkgname=powermanga
 pkgver=0.93.1
-pkgrel=1
-pkgdesc='An arcade 2D shoot-them-up game with 41 levels and more than 200 sprites'
+pkgrel=2
+pkgdesc='Powermanga is a shoot-em-up game. You will have to fight more than 60 different types of
+       enemies. You start with a ship, and enemies show up throwing bombs at  you.  Shoot  them,  and  get
+       better weapons for your ship (otherwise, you wont go too far!).
+       To  get  better  weapons,  you  will have to catch green and red gems. Whenever you pick a
+       green gem, the highlighted option at the right side of the screen goes up one unit...'
 arch=('x86_64' 'armv7h' 'aarch64')
 url="http://linux.tlk.fr/games/Powermanga"
 license=('GPL3')

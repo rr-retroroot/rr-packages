@@ -2,8 +2,13 @@
 
 pkgname=opentyrian
 pkgver=2.1.20220318
-pkgrel=1
-pkgdesc='Open Source port of the classic DOS shoot-em-up Tyrian'
+pkgrel=2
+pkgdesc='OpenTyrian is an open-source port of the DOS game Tyrian.
+  Tyrian is an arcade-style vertical scrolling shooter.  The story is set
+  in 20,031 where you play as Trent Hawkins, a skilled fighter-pilot employed
+  to fight MicroSol and save the galaxy.
+  Tyrian features a story mode, one- and two-player arcade modes, and networked
+  multiplayer.'
 url='https://github.com/opentyrian/opentyrian'
 arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL2')
