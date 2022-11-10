@@ -2,7 +2,7 @@
 
 pkgname=rr-initramfs-hook
 pkgver=1
-pkgrel=1
+pkgrel=2
 pkgdesc="RetroRoot initramfs hook"
 arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL')

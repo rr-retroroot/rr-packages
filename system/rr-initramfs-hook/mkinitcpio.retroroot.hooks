@@ -24,7 +24,7 @@ get_size_percent() {
 }
 
 create_root_overlay_partition() {
-  OVERLAY_PARTITION="/dev/${ROOT_PARTITION%?}2"
+  OVERLAY_PARTITION="/dev/${ROOT_PARTITION%?}4"
   echo "Creating data partition \"${OVERLAY_PARTITION}\" on \"${ROOT_DEVICE}\", please wait..."
   parted -f -a optimal -s ${ROOT_DEVICE} \
     mkpart primary ext4 $(get_size_percent 1025)% $(get_size_percent 8192)% \
@@ -34,7 +34,7 @@ create_root_overlay_partition() {
 }
 
 create_data_partition() {
-  DATA_PARTITION="/dev/${ROOT_PARTITION%?}3"
+  DATA_PARTITION="/dev/${ROOT_PARTITION%?}5"
   echo "Creating data partition \"${DATA_PARTITION}\" on \"${ROOT_DEVICE}\", please wait..."
   parted -f -a optimal -s ${ROOT_DEVICE} \
     mkpart primary ext4 $(get_size_percent 8193)% 100% \

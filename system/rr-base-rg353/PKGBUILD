@@ -2,7 +2,7 @@
 
 pkgname=rr-base-rg353
 pkgver=1
-pkgrel=1
+pkgrel=2
 pkgdesc="RetroRoot base system (rg353)"
 arch=('aarch64')
 license=('GPL')
@@ -14,5 +14,5 @@ groups=('retroroot' 'system')
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
 # the package should build and link a static library here.
 # "system" packages are specials...
-depends=('rr-base' 'rr-overlay-rg353')
+depends=('rr-base' 'rr-overlay-rg353' 'uboot-rg353')
 
