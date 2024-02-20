@@ -14,3 +14,6 @@ include usercfg.txt
 
 # Uncomment to enable bluetooth
 #dtparam=krnbt=on
+
+# debug uart
+dtoverlay=disable-bt
