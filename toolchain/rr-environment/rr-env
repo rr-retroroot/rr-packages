@@ -45,6 +45,10 @@ if [ ${_arch} == "x86_64" ]; then
   export CFLAGS="${CFLAGS}"
   export CPPFLAGS="${CPPFLAGS}"
   export CXXFLAGS="${CXXFLAGS}"
+elif [ ${_arch} == "armv6h" ]; then
+  export CFLAGS="${CFLAGS} -march=armv6h -mfloat-abi=hard -mfpu=neon"
+  export CPPFLAGS="${CPPFLAGS} -march=armv6h -mfloat-abi=hard -mfpu=neon"
+  export CXXFLAGS="${CXXFLAGS} -march=armv6h -mfloat-abi=hard -mfpu=neon"
 elif [ ${_arch} == "armv7h" ]; then
   export CFLAGS="${CFLAGS} -march=armv7-a -mfloat-abi=hard -mfpu=neon"
   export CPPFLAGS="${CPPFLAGS} -march=armv7-a -mfloat-abi=hard -mfpu=neon"

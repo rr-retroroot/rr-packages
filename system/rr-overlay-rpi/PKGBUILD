@@ -2,7 +2,7 @@
 
 pkgname=rr-overlay-rpi
 pkgver=1
-pkgrel=1
+pkgrel=2
 pkgdesc="RetroRoot rootfs overlay (rpi)"
 arch=('aarch64')
 license=('GPL')

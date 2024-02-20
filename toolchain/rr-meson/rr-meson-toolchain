@@ -25,6 +25,13 @@ case "$1" in
 	PLAT_ENDIAN="little"
 	source ${SCRIPTDIR}/rr-env
 	;;
+"armv6h")
+	PLAT_SYSTEM="linux"
+	PLAT_CPU_FAMILY="armv6h"
+	PLAT_CPU="armv6h"
+	PLAT_ENDIAN="little"
+	source ${SCRIPTDIR}/rr-env
+	;;
 "armv7a")
 	PLAT_SYSTEM="linux"
 	PLAT_CPU_FAMILY="armv7-a"

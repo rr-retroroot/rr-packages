@@ -2,7 +2,7 @@
 
 set -e
 
-RR_SSH_HOST="us.mydedibox.fr"
+RR_SSH_HOST="mydedibox.fr"
 RR_SSH_HOST_MIRROR="mydedibox.fr"
 RR_TEMP_DB="$(pwd)/.repo"
 
