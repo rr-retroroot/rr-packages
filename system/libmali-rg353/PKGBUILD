@@ -2,7 +2,7 @@
 
 pkgname=libmali-rg353
 pkgver=1.9.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Userspace interface to kernel DRM services (rg353)"
 arch=('aarch64')
 license=('custom')
@@ -13,7 +13,7 @@ groups=('retroroot' 'system' 'rg353')
 
 depends=('libdrm')
 makedepends=('rr-environment' 'rr-toolchain-aarch64')
-provides=('mesa' 'libglvnd' 'libgl' 'libegl')
+#provides=('mesa' 'libglvnd' 'libgl' 'libegl')
 conflicts=('mesa' 'libglvnd' 'libgl' 'libegl')
 
 commit="db646740a751082b31d4b53cc69ae311aab7e20f"
