@@ -1,0 +1,52 @@
+# Maintainer: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=linux-surfacert
+pkgver=6.4.0
+pkgrel=3
+pkgdesc="RetroRoot surfacert kernel"
+arch=('armv7h')
+license=('GPL')
+commit=a87c8a17f1228ecd6d2463c37d5d37b0ef9100ce
+url="https://github.com/grate-driver/linux/archive/$commit.zip"
+
+# every retroroot pkg must be a member of "retroroot" AND "game", "emulator", "app" or "system" group
+groups=('retroroot' 'system' 'surfacert')
+
+depends=('coreutils' 'mkinitcpio>=0.7')
+makedepends=('rr-environment' 'rr-toolchain-armv7h')
+
+source=("$url" "config-surfacert")
+sha512sums=('SKIP' 'SKIP')
+
+prepare() {
+  _builddir="$srcdir/linux-$commit"
+  cd "$_builddir"
+  cp "$srcdir/config-surfacert" .config
+  make ARCH="arm" oldconfig
+}
+
+build() {
+  cd "$srcdir"/linux-$commit
+  
+  source /opt/retroroot/rr-env ${CARCH}
+  yes "" | make $MAKEFLAGS ARCH="arm" CROSS_COMPILE=${RETROROOT_CROSS_PREFIX} \
+    KBUILD_BUILD_VERSION="$((pkgrel + 0))-retroroot"
+}
+
+package() {
+  cd "$srcdir"/linux-$commit
+  
+  # install kernel image and dtb
+  install -d "$pkgdir"/boot
+  cp arch/arm/boot/zImage "$pkgdir"/boot/zImage
+  cp arch/arm/boot/dts/tegra30-microsoft-surface-rt-efi.dtb "$pkgdir"/boot/
+  
+  # install kernel modules
+  make ARCH="arm" INSTALL_MOD_PATH="$pkgdir"/usr modules_install
+  # remove build and source links
+  rm "$pkgdir"/usr/lib/modules/6.4.0-rc6-next-20230616/{source,build}
+  
+  # TODO: install kernel headers
+  #make INSTALL_HDR_PATH="$pkgdir"/usr header_install
+}
+

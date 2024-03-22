@@ -25,7 +25,7 @@ get_size_percent() {
 
 create_root_overlay_partition() {
   OVERLAY_PARTITION="/dev/${ROOT_PARTITION%?}4"
-  echo "Creating data partition \"${OVERLAY_PARTITION}\" on \"${ROOT_DEVICE}\", please wait..."
+  echo "Creating overlay partition \"${OVERLAY_PARTITION}\" on \"${ROOT_DEVICE}\", please wait..."
   parted -f -a optimal -s ${ROOT_DEVICE} \
     mkpart primary ext4 $(get_size_percent 1074)% $(get_size_percent 8192)% \
     || launch_interactive_shell
@@ -53,9 +53,10 @@ run_latehook() {
 
   # check if partitions needs to be created
   if [ "${recovery}" != "1" ]; then
-    # not in recovery, show splash screen
-    rr-splash /dev/fb0 /logo.png &
-
+    if [ -n "${splash}" ]; then
+      # not in recovery and splash screen requested, show splash screen
+      rr-splash /dev/fb0 /logo.png &
+    fi
     # get "RR-ROOT" device informations
     ROOT_PARTITION=$(get_root_partition)
     ROOT_DEVICE=$(get_root_device)
