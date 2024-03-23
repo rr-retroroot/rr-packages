@@ -1,8 +1,8 @@
 # Maintainer: cpasjuste <cpasjuste@gmail.com>
 
 pkgname=retroarch
-pkgver=1.12.0
-pkgrel=2
+pkgver=1.18.0
+pkgrel=3
 pkgdesc='Reference frontend for the libretro API'
 arch=('x86_64' 'armv7h' 'aarch64')
 url='https://github.com/libretro/RetroArch'
@@ -19,9 +19,9 @@ groups=('retroroot' 'emulator')
 provides=('retroarch' 'retroarch-assets-glui' 'retroarch-assets-ozone' 'retroarch-assets-xmb' 'libretro-core-info')
 conflicts=('retroarch' 'retroarch-assets-glui' 'retroarch-assets-ozone' 'retroarch-assets-xmb' 'libretro-core-info')
 
-assets_commit=ee33f8ef693b42a8e23ca3fd48f43f345e7cd087
-core_info_commit=cbf7be9d90c407abbe7d3406a8aa5ed1d23a71d8
-joypad_autoconfig_ver=1.11.0
+assets_commit=923b711dc6772a168d83dc8915e9260730fcf3a1
+core_info_commit=dab6fd87f661ce306bb867e9cd10f14dd40c10e9
+joypad_autoconfig_ver=1.17.0
 source=(
   # retroarch
   "$url/archive/refs/tags/v$pkgver.tar.gz"
@@ -74,6 +74,7 @@ build() {
     --disable-builtinflac \
     --disable-builtinmbedtls \
     --disable-builtinzlib \
+    --disable-builtinbearssl \
     --disable-cg \
     --enable-kms \
     --enable-dbus \
