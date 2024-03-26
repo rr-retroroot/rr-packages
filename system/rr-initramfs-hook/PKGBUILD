@@ -2,7 +2,7 @@
 
 pkgname=rr-initramfs-hook
 pkgver=1
-pkgrel=8
+pkgrel=15
 pkgdesc="RetroRoot initramfs hook"
 arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL')
@@ -14,7 +14,8 @@ groups=('retroroot' 'system')
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
 # the package should build and link a static library here.
 # "system" packages are specials...
-depends=('rr-splash' 'parted' 'e2fsprogs' 'exfatprogs' 'util-linux')
+depends=('rr-splash' 'parted' 'e2fsprogs' 'util-linux')
+# 'exfatprogs'
 
 source=(
   'mkinitcpio.conf'

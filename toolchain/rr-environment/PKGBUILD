@@ -2,7 +2,7 @@
 
 pkgname=rr-environment
 pkgver=1
-pkgrel=1
+pkgrel=2
 pkgdesc='retroroot script providing common environment variables and functions.'
 arch=('any')
 url='https://github.com/rr-retroroot/rr-packages'

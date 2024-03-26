@@ -11,10 +11,15 @@ if [ -z "${RETROROOT_HOME}" ]; then
 fi
 
 # sysroot path
-export RETROROOT_SYSROOT=${RETROROOT_HOME}/target/${_arch}
+if [ -z "${RETROROOT_SYSROOT}" ]; then
+    export RETROROOT_SYSROOT=${RETROROOT_HOME}/target/${_arch}
+fi
 
 # toolchain setup
-export RETROROOT_HOST=${RETROROOT_HOME}/host/${_arch}
+if [ -z "${RETROROOT_HOST}" ]; then
+    export RETROROOT_HOST=${RETROROOT_HOME}/host/${_arch}
+fi
+
 export RETROROOT_CROSS_PREFIX=${_arch}-linux-gnu-
 
 export RETROROOT_CC=${RETROROOT_CROSS_PREFIX}gcc
@@ -38,8 +43,8 @@ export STRIP="${RETROROOT_STRIP}"
 export CFLAGS="-I${RETROROOT_SYSROOT}/usr/include -O2 -pipe -fno-plt -D__RETROROOT__ ${CFLAGS}"
 export CPPFLAGS="${CFLAGS} ${CPPFLAGS} -fexceptions"
 export CXXFLAGS="${CFLAGS} ${CXXFLAGS} -fexceptions"
-export LDFLAGS="-L${RETROROOT_SYSROOT}/usr/lib -Wl,-O1,--sort-common,--as-needed ${LDFLAGS}"
-
+export LDFLAGS="-L${RETROROOT_SYSROOT}/usr/lib ${LDFLAGS}"
+# -Wl,-O1,--sort-common,--as-needed
 # arch specific
 if [ ${_arch} == "x86_64" ]; then
   export CFLAGS="${CFLAGS}"

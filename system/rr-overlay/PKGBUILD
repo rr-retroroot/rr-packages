@@ -2,7 +2,7 @@
 
 pkgname=rr-overlay
 pkgver=1
-pkgrel=1
+pkgrel=4
 pkgdesc="RetroRoot rootfs overlay"
 arch=('x86_64' 'armv7h' 'aarch64')
 license=('GPL')
@@ -14,7 +14,7 @@ groups=('retroroot' 'system')
 # are in "retroroot-sysroot-*arch*" toolchain package. If not present in sysroot,
 # the package should build and link a static library here.
 # "system" packages are specials...
-depends=('base')
+depends=('rr-base')
 
 package() {
   # copy common rootfs overlays

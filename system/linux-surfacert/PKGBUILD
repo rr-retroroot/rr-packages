@@ -2,7 +2,7 @@
 
 pkgname=linux-surfacert
 pkgver=6.6.22
-pkgrel=5
+pkgrel=6
 pkgdesc="RetroRoot surfacert kernel"
 arch=('armv7h')
 license=('GPL')
@@ -48,5 +48,8 @@ package() {
   
   # TODO: install kernel headers
   #make INSTALL_HDR_PATH="$pkgdir"/usr header_install
+  
+  # copy surfacert rootfs overlays
+  cp -r "$startdir"/overlay/. "${pkgdir}"
 }
 

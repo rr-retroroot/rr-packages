@@ -3,6 +3,7 @@
 
 # <file system> <dir> <type> <options> <dump> <pass>
 
-LABEL=RR-BOOT   /boot       vfat      ro,defaults           0 2
-LABEL=RR-DATA   /home/rr    exfat     defaults              0 2
+LABEL=RR-ROOT   /           ext4    defaults    0 1
+LABEL=RR-BOOT   /boot       vfat    ro,defaults 0 0
+#LABEL=RR-DATA   /home/rr  exfat  defaults 0 2
 
